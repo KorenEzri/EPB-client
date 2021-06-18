@@ -8,9 +8,10 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    background-color: #3D5866;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: whitesmoke;
   }
-
   #root {
     min-height: 100%;
     min-width: 100%;

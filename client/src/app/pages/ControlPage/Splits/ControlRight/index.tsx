@@ -2,15 +2,20 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { useTranslation } from 'react-i18next';
 import { useApolloClient } from '@apollo/client';
-import { qGetResolvers } from '../../../../network';
+import { LiveCode } from './StyledCode';
+import { Playground } from './Playground/Loadable';
+import { getterSetter, queries } from '../../../../network';
 import Prism from 'prismjs';
 // import { messages } from './messages';
 
 interface Props {}
-
 enum Tabs {
   LIVECODE,
   PLAYGROUND,
+}
+enum SubTabs {
+  RESOLVERS,
+  TYPEDEFS,
 }
 
 export function ControlRight(props: Props) {
@@ -18,18 +23,20 @@ export function ControlRight(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t, i18n } = useTranslation();
   const [tab, setTab] = React.useState<Tabs>(Tabs.LIVECODE);
+  const [subTab, setSubTab] = React.useState<SubTabs>(SubTabs.RESOLVERS);
   const [resolvers, setResolvers] = React.useState('');
+  const [typeDefs, setTypeDefs] = React.useState('');
 
   React.useEffect(() => {
     (async () => {
       try {
-        const {
-          data: { getResolvers },
-        } = await client.query({
-          query: qGetResolvers,
-        });
-        setResolvers(getResolvers);
+        await getterSetter(client, queries.qGetResolvers, setResolvers);
         Prism.highlightAll();
+      } catch ({ message }) {
+        console.log(message);
+      }
+      try {
+        await getterSetter(client, queries.qTypeDefs, setTypeDefs);
       } catch ({ message }) {
         console.log(message);
       }
@@ -37,7 +44,12 @@ export function ControlRight(props: Props) {
   });
 
   return (
-    <Wrapper>
+    <Wrapper
+      onClick={() => {
+        const perma = document.querySelector('.permalight');
+        if (perma instanceof HTMLElement) perma.classList.remove('permalight');
+      }}
+    >
       {t('')}
       {/*  {t(...messages.someThing())}  */}
       <TabContainer>
@@ -46,26 +58,54 @@ export function ControlRight(props: Props) {
             setTab(Tabs.LIVECODE);
           }}
         >
-          Live code
+          <span>Live code</span>
+          <Slider className={tab === Tabs.LIVECODE ? 'active' : ''} />
+          {tab === Tabs.LIVECODE && (
+            <SubTabContainer>
+              <SubTab
+                onClick={() => {
+                  setSubTab(SubTabs.RESOLVERS);
+                }}
+              >
+                Resolvers
+              </SubTab>
+              <Slider
+                className={subTab === SubTabs.RESOLVERS ? 'activeD' : ''}
+              />
+              <SubTab
+                onClick={() => {
+                  setSubTab(SubTabs.TYPEDEFS);
+                }}
+              >
+                TypeDefs
+              </SubTab>
+              <Slider
+                className={subTab === SubTabs.TYPEDEFS ? 'activeC' : ''}
+              />
+            </SubTabContainer>
+          )}
         </Tab>
         <Tab
           onClick={() => {
             setTab(Tabs.PLAYGROUND);
           }}
         >
-          GQL-Playground
+          <span>GQL-Playground</span>
+          <Slider className={tab === Tabs.PLAYGROUND ? 'activeB' : ''} />
         </Tab>
       </TabContainer>
       {tab === Tabs.LIVECODE ? (
         <LiveCode>
           <pre id="breathing" className="language-javascript">
             <Code>
-              <code className="language-javascript">{resolvers}</code>
+              <code className="language-javascript">
+                {subTab === SubTabs.RESOLVERS ? resolvers : typeDefs}
+              </code>
             </Code>
           </pre>
         </LiveCode>
       ) : (
-        <Playground> TAB ONE</Playground>
+        <Playground />
       )}
     </Wrapper>
   );
@@ -73,11 +113,71 @@ export function ControlRight(props: Props) {
 
 const Wrapper = styled.div`
   overflow: hidden;
+  .highlight {
+    background-color: #d6d600;
+    padding: 2px !important;
+    color: darkblue !important;
+  }
+  .permalight {
+    background-color: #d6d600;
+    padding: 2px !important;
+    color: darkblue !important;
+  }
+  .active {
+    display: inline-block;
+    width: 50px;
+    height: 4px;
+    border-radius: 3px;
+    background-color: #39bcd3;
+    position: absolute;
+    margin-left: -55px;
+    margin-top: 18.5px;
+    transition: all 0.4s linear;
+  }
+  .activeB {
+    display: inline-block;
+    width: 100px;
+    height: 4px;
+    border-radius: 3px;
+    background-color: #39bcd3;
+    position: absolute;
+    margin-left: -102px;
+    margin-top: 18.5px;
+    transition: all 0.4s linear;
+  }
+  .activeC {
+    display: inline-block;
+    width: 40px;
+    height: 4px;
+    border-radius: 3px;
+    background-color: #39bcd3;
+    position: absolute;
+    margin-left: 72px;
+    margin-top: 27.5px;
+    transition: all 0.4s linear;
+  }
+  .activeD {
+    display: inline-block;
+    width: 40px;
+    height: 4px;
+    border-radius: 3px;
+    background-color: #39bcd3;
+    position: absolute;
+    margin-left: -70px;
+    margin-top: 27.5px;
+    transition: all 0.4s linear;
+  }
 `;
+const Slider = styled.div``;
 const TabContainer = styled.nav`
   display: flex;
   justify-content: space-between;
-  border: 1px solid black;
+  font-size: 14px;
+  height: 70px;
+`;
+const SubTabContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 const Tab = styled.span`
   text-align: center;
@@ -85,146 +185,10 @@ const Tab = styled.span`
   padding: 6px;
   width: 50%;
 `;
-const LiveCode = styled.div`
-  margin-top: -8px;
-  code[class*='language-'],
-  pre[class*='language-'] {
-    color: #f8f8f2;
-    background: none;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-    font-family: Monaco, Consolas, 'Andale Mono', 'Ubuntu Mono', monospace;
-    text-align: left;
-    white-space: pre;
-    word-spacing: normal;
-    word-break: normal;
-    word-wrap: normal;
-    line-height: 1.5;
-    -moz-tab-size: 4;
-    -o-tab-size: 4;
-    tab-size: 4;
-    -webkit-hyphens: none;
-    -moz-hyphens: none;
-    -ms-hyphens: none;
-    hyphens: none;
-  }
-
-  /* Code blocks */
-  pre[class*='language-'] {
-    padding: 1em;
-    margin: 0.5em 0;
-    overflow: auto;
-    border-radius: 0.3em;
-  }
-
-  :not(pre) > code[class*='language-'],
-  pre[class*='language-'] {
-    background: #263e52;
-  }
-
-  /* Inline code */
-  :not(pre) > code[class*='language-'] {
-    padding: 0.1em;
-    border-radius: 0.3em;
-    white-space: normal;
-  }
-
-  .token.comment,
-  .token.prolog,
-  .token.doctype,
-  .token.cdata {
-    color: #5c98cd;
-  }
-
-  .token.punctuation {
-    color: #f8f8f2;
-  }
-
-  .namespace {
-    opacity: 0.7;
-  }
-
-  .token.property,
-  .token.tag,
-  .token.constant,
-  .token.symbol,
-  .token.deleted {
-    color: #f05e5d;
-  }
-
-  .token.boolean,
-  .token.number {
-    color: #bc94f9;
-  }
-
-  .token.selector,
-  .token.attr-name,
-  .token.string,
-  .token.char,
-  .token.builtin,
-  .token.inserted {
-    color: #fcfcd6;
-  }
-
-  .token.operator,
-  .token.entity,
-  .token.url,
-  .language-css .token.string,
-  .style .token.string,
-  .token.variable {
-    color: #f8f8f2;
-  }
-
-  .token.atrule,
-  .token.attr-value,
-  .token.function,
-  .token.class-name {
-    color: #66d8ef;
-  }
-
-  .token.keyword {
-    color: #6eb26e;
-  }
-
-  .token.regex,
-  .token.important {
-    color: #f05e5d;
-  }
-
-  .token.important,
-  .token.bold {
-    font-weight: bold;
-  }
-
-  .token.italic {
-    font-style: italic;
-  }
-
-  .token.entity {
-    cursor: help;
-  }
-  #breathing {
-    -webkit-animation: breathing 8s ease-out infinite normal;
-    animation: breathing 8s ease-out infinite normal;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  @keyframes breathing {
-    0% {
-      transform: scale(1);
-    }
-    25% {
-      transform: scale(1.01);
-    }
-    60% {
-      transform: scale(1.01);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
+const SubTab = styled.p`
+  margin: 6px;
 `;
 const Code = styled.div`
   height: 100vh;
   position: relative;
 `;
-const Playground = styled.div``;

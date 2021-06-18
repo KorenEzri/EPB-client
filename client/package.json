@@ -47,6 +47,7 @@
     "react-app-polyfill": "1.0.6",
     "react-dom": "16.13.1",
     "react-helmet-async": "1.0.6",
+    "react-highlight-words": "0.17.0",
     "react-highlight.js": "1.0.7",
     "react-i18next": "11.7.2",
     "react-redux": "7.2.1",
@@ -69,7 +70,6 @@
     "web-vitals": "0.2.4"
   },
   "proxy": "http://localhost:8001/",
-  "homepage": "http://localhost:8001/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

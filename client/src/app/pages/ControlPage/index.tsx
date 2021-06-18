@@ -29,11 +29,9 @@ const Container = styled.div`
 `;
 const LeftWrapper = styled.div`
   width: 50%;
-  height: 100vh;
-  border-right: 1px solid black;
 `;
 const RightWrapper = styled.div`
   width: 50%;
+  min-width: 309px;
   height: 100vh;
-  border-left: 1px solid black;
 `;

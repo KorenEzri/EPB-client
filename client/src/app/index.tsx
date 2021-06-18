@@ -16,7 +16,7 @@ import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 
 const client = new ApolloClient({
-  uri: '/graphql',
+  uri: 'http://localhost:8001/graphql',
   credentials: 'include',
   cache: new InMemoryCache(),
 });
