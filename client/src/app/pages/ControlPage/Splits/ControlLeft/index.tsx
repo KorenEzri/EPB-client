@@ -1,17 +1,26 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { useTranslation } from 'react-i18next';
-import { ActionList } from './ActionList/Loadable';
+import * as components from './components';
 import { useApolloClient } from '@apollo/client';
 import { getterSetter, queries } from '../../../../network';
 // import { messages } from './messages';
 interface Props {}
-
+interface ActiveTab {
+  isActive: boolean;
+}
+enum Tabs {
+  ACTIONS,
+  CREATE,
+  UPDATE,
+  DELETE,
+}
 export function ControlLeft(props: Props) {
   const client = useApolloClient();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t, i18n } = useTranslation();
   const [actions, setActions] = React.useState([]);
+  const [tab, setTab] = React.useState(Tabs.ACTIONS);
 
   React.useEffect(() => {
     (async () => {
@@ -27,58 +36,95 @@ export function ControlLeft(props: Props) {
       {t('')}
       {/*  {t(...messages.someThing())}  */}
       <HeaderContainer>
-        <HeaderButton>Create</HeaderButton>
-        <HeaderButton>Update</HeaderButton>
-        <HeaderButton>Delete</HeaderButton>
+        <HeaderButton
+          isActive={tab === Tabs.ACTIONS}
+          onClick={() => {
+            setTab(Tabs.ACTIONS);
+          }}
+        >
+          Actions
+        </HeaderButton>
+        <HeaderButton
+          isActive={tab === Tabs.CREATE}
+          onClick={() => {
+            setTab(Tabs.CREATE);
+          }}
+        >
+          Create
+        </HeaderButton>
+        <HeaderButton
+          isActive={tab === Tabs.UPDATE}
+          onClick={() => {
+            setTab(Tabs.UPDATE);
+          }}
+        >
+          Update
+        </HeaderButton>
+        <HeaderButton
+          isActive={tab === Tabs.DELETE}
+          onClick={() => {
+            setTab(Tabs.DELETE);
+          }}
+        >
+          Delete
+        </HeaderButton>
       </HeaderContainer>
-      <ItemContainer>
-        <YourActionsTitle>Your actions</YourActionsTitle>
-        <ActionList actions={actions} />
-      </ItemContainer>
+      <Content>
+        {tab === Tabs.ACTIONS ? (
+          <components.ActionList actions={actions} />
+        ) : tab === Tabs.CREATE ? (
+          <components.Create />
+        ) : tab === Tabs.UPDATE ? (
+          <components.Update />
+        ) : tab === Tabs.DELETE ? (
+          <components.Delete />
+        ) : null}
+      </Content>
     </Wrapper>
   );
 }
 
+const Content = styled.div``;
 const Wrapper = styled.div`
   font-size: 16px;
 `;
 const HeaderContainer = styled.nav`
   display: flex;
-  justify-content: center;
-  height: 70px;
   margin-bottom: 5px;
 `;
-const YourActionsTitle = styled.span`
-  position: relative;
-  bottom: 5px;
-  font-weight: bolder;
+const HeaderButton = styled.button<ActiveTab>`
   letter-spacing: 1px;
-  text-decoration: italic;
-  margin-left: 5px;
-`;
-const ItemContainer = styled.div``;
-const HeaderButton = styled.button`
-  letter-spacing: 1px;
-  margin-top: 15px;
   box-shadow: 0px 1px 0px 0px #f0f7fa;
-  background: linear-gradient(to bottom, #2ea4cf 5%, #027eac 100%);
-  background-color: #2b9dc7;
-  border-radius: 6px;
-  border: 1px solid #056cb1;
+  background: ${({ isActive }) =>
+    isActive
+      ? ' linear-gradient(to bottom, #298baf 5%, #026c92 100%);'
+      : '  linear-gradient(to bottom, #2ea4cf 5%, #027eac 100%);'};
+  background-color: ${({ isActive }) => (isActive ? '#16495c' : ' #1f6680')};
+  border: 1px solid #024979;
+  border-bottom: ${({ isActive }) =>
+    isActive ? '1.2px solid limegreen;' : '0px;'};
   display: inline-block;
   cursor: pointer;
   color: #ffffff;
   font-family: Arial;
   font-size: 14px;
   font-weight: bold;
-  height: 40px;
-  width: 90px;
+  height: 50px;
+  width: 100%;
   text-decoration: none;
-  text-shadow: 0px -1px 0px #434758;
+  text-shadow: 0px -1px 0px #2c2e3a;
   outline: none !important;
+  @media (max-width: 640px) {
+    font-size: 10px;
+    height: 40px;
+    min-width: 60px;
+  }
   &:hover {
-    background: linear-gradient(to bottom, #0384b3 5%, #2693bb 100%);
-    background-color: #0175a0;
+    background: ${({ isActive }) =>
+      isActive
+        ? ' linear-gradient(to bottom, #035b7a 5%, #217ea0 100%);'
+        : '  linear-gradient(to bottom, #026488 5%, #2693bb 100%);'};
+    background-color: ${({ isActive }) => (isActive ? '#02698f;' : '#0175a0;')};
   }
   &:active {
     position: relative;

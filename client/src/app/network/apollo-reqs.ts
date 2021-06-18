@@ -30,6 +30,5 @@ export const getterSetter = async (
   const { data } = await client.query({
     query: qry,
   });
-  console.log(query);
   setter(data[query.definitions[0].name.value]);
 };

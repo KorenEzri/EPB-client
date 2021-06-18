@@ -28,10 +28,10 @@ const Container = styled.div`
   display: flex;
 `;
 const LeftWrapper = styled.div`
+  border-right: 1px solid;
   width: 50%;
 `;
 const RightWrapper = styled.div`
   width: 50%;
   min-width: 309px;
-  height: 100vh;
 `;
