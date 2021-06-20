@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { useTranslation } from 'react-i18next';
 import * as components from './components';
 import { useApolloClient } from '@apollo/client';
-import { getterSetter, queries } from '../../../../network';
+import { getterSetterQuery, queries } from '../../../../network';
 // import { messages } from './messages';
 interface Props {}
 interface ActiveTab {
@@ -25,7 +25,7 @@ export function ControlLeft(props: Props) {
   React.useEffect(() => {
     (async () => {
       try {
-        await getterSetter(client, queries.qActions, setActions);
+        await getterSetterQuery(client, queries.qActions, setActions);
       } catch ({ message }) {
         console.log(message);
       }

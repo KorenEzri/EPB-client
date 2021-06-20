@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { useApolloClient } from '@apollo/client';
 import { LiveCode } from './StyledCode';
 import { Playground } from './Playground/Loadable';
-import { getterSetter, queries } from '../../../../network';
+import { getterSetterQuery, queries } from '../../../../network';
 import Prism from 'prismjs';
 // import { messages } from './messages';
 
@@ -21,7 +21,7 @@ enum SubTabs {
 export function ControlRight(props: Props) {
   const client = useApolloClient();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation();
   const [tab, setTab] = React.useState<Tabs>(Tabs.LIVECODE);
   const [subTab, setSubTab] = React.useState<SubTabs>(SubTabs.RESOLVERS);
   const [resolvers, setResolvers] = React.useState('');
@@ -30,13 +30,13 @@ export function ControlRight(props: Props) {
   React.useEffect(() => {
     (async () => {
       try {
-        await getterSetter(client, queries.qGetResolvers, setResolvers);
+        await getterSetterQuery(client, queries.qGetResolvers, setResolvers);
         Prism.highlightAll();
       } catch ({ message }) {
         console.log(message);
       }
       try {
-        await getterSetter(client, queries.qTypeDefs, setTypeDefs);
+        await getterSetterQuery(client, queries.qTypeDefs, setTypeDefs);
       } catch ({ message }) {
         console.log(message);
       }
@@ -50,7 +50,7 @@ export function ControlRight(props: Props) {
         if (perma instanceof HTMLElement) perma.classList.remove('permalight');
       }}
     >
-      {t('')}
+      {/* {t('')} */}
       {/*  {t(...messages.someThing())}  */}
       <TabContainer>
         <Tab
@@ -96,13 +96,13 @@ export function ControlRight(props: Props) {
       </TabContainer>
       {tab === Tabs.LIVECODE ? (
         <LiveCode>
-          <pre id="breathing" className="language-javascript">
+          <Pre id="breathing" className="language-javascript">
             <Code>
               <code className="language-javascript">
                 {subTab === SubTabs.RESOLVERS ? resolvers : typeDefs}
               </code>
             </Code>
-          </pre>
+          </Pre>
         </LiveCode>
       ) : (
         <Playground />
@@ -191,4 +191,11 @@ const SubTab = styled.p`
 const Code = styled.div`
   height: 100vh;
   position: relative;
+`;
+const Pre = styled.pre`
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;

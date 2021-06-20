@@ -1,14 +1,16 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { Action } from './Action/Loadable';
 // import { useTranslation } from 'react-i18next';
+import { ItemInput } from './ItemInput/Loadable';
 // import { messages } from './messages';
 
 interface Props {
-  actions;
+  type;
+  items;
+  setItems;
 }
 
-export function ActionList(props: Props) {
+export function MultiInput(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const { t, i18n } = useTranslation();
 
@@ -16,9 +18,10 @@ export function ActionList(props: Props) {
     <Div>
       {/* {t('')} */}
       {/*  {t(...messages.someThing())}  */}
-      {props.actions?.map((action, index) => {
-        return <Action action={action} key={`${index}action`} />;
-      })}
+      <label>{props.type}</label>
+      <div>
+        <ItemInput items={props.items} setItems={props.setItems} />
+      </div>
     </Div>
   );
 }

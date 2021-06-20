@@ -1,11 +1,6 @@
-/**
- *
- * Action
- *
- */
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 // import { messages } from './messages';
 
 const removeHightlight = () => {
@@ -39,7 +34,7 @@ interface Props {
 
 export function Action(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation();
 
   return (
     <div
@@ -83,7 +78,7 @@ export function Action(props: Props) {
         });
       }}
     >
-      {t('')}
+      {/* {t('')} */}
       {/*  {t(...messages.someThing())}  */}
       <ActionDiv>{props.action}</ActionDiv>
     </div>

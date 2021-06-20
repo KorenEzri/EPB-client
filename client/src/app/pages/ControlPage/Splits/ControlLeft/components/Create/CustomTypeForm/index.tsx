@@ -1,42 +1,63 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
+import { MultiInput } from 'app/components';
 // import { messages } from './messages';
 
 interface Props {}
 
 export function CustomTypeForm(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation();
+  const [properties, setProperties] = React.useState({ items: [] });
   const [select, setSelect] = React.useState('');
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
   } = useForm();
+  // placeholder="name: String; workPlace: CustomType3;"
+  const onSubmit = async data => {
+    if (!properties.items[0]) {
+      console.log('here');
+      errors.properties = '1';
+      console.log(errors);
+      return;
+    }
+    console.log(data);
+  };
 
   return (
     <Wrapper>
-      {t('')}
+      {/* {t('')} */}
       {/*  {t(...messages.someThing())}  */}
       <Title>Create a custom type</Title>
-      <HtmlForm>
+      <HtmlForm onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
           <Input>
             <Label>
               Type name <RequiredSpan>*</RequiredSpan>
             </Label>
-            <input type="text" placeholder="Pick a name, any name.." />
+            <input
+              {...register('name', {
+                required: true,
+              })}
+              type="text"
+              placeholder="Pick a name, any name.."
+            />
+            {errors.name && <ErrorSpan>Type name is necessary.</ErrorSpan>}
           </Input>
           <Input>
             <Label>
               Properties (Press Enter to add) <RequiredSpan>*</RequiredSpan>
             </Label>
-            <input
-              type="text"
-              placeholder="name: String; workPlace: CustomType3;"
-            />
+            <MultiInputContainer>
+              <MultiInput type="" items={properties} setItems={setProperties} />
+            </MultiInputContainer>
+            {errors.properties && (
+              <ErrorSpan>At least one property is necessary.</ErrorSpan>
+            )}
           </Input>
           <Input>
             <Label>Comment?</Label>
@@ -64,7 +85,10 @@ const Input = styled.div`
   input,
   textarea,
   select {
-    padding: 4px;
+    padding: 6px;
+    width: 60%;
+    background-color: #0f202d;
+    color: #85bcd8;
   }
 `;
 const InputContainer = styled.div`
@@ -134,5 +158,12 @@ const Title = styled.h3`
 `;
 const RequiredSpan = styled.span`
   padding-left: 5px;
+  color: #ff3300 !important;
+`;
+const MultiInputContainer = styled.div`
+  margin-top: -10px;
+`;
+const ErrorSpan = styled.span`
+  margin-top: 5px;
   color: #ff3300 !important;
 `;

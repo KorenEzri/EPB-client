@@ -1,29 +1,56 @@
 import * as React from 'react';
-import styled from 'styled-components/macro';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
+import { MultiInput } from '../../../../../../../components';
+import { getterSetterMutation, mutations } from 'app/network';
+import { useApolloClient } from '@apollo/client';
+import {
+  Wrapper,
+  Title,
+  HtmlForm,
+  InputContainer,
+  Input,
+  Label,
+  RequiredSpan,
+  ErrorSpan,
+  MultiInputContainer,
+  ButtonContainer,
+  CreateButton,
+} from './Styles';
 // import { messages } from './messages';
 
 interface Props {}
 
 export function ActionForm(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t, i18n } = useTranslation();
-  const [select, setSelect] = React.useState('');
+  // const { t, i18n } = useTranslation();
+  const client = useApolloClient();
+  const [vars, setVars] = React.useState({ items: [] });
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
   } = useForm();
   const onSubmit = async data => {
+    data.vars = vars.items;
     console.log(data);
+    const res = await getterSetterMutation(
+      client,
+      mutations.mCreateResolver,
+      data,
+    );
   };
+
   return (
     <Wrapper>
-      {t('')}
+      {/* {t('')} */}
       {/*  {t(...messages.someThing())}  */}
       <Title>Create an action</Title>
-      <HtmlForm onSubmit={handleSubmit(onSubmit)}>
+      <HtmlForm
+        onSubmit={e => {
+          e.preventDefault();
+        }}
+      >
         <InputContainer>
           <Input>
             <Label>
@@ -36,129 +63,79 @@ export function ActionForm(props: Props) {
               type="text"
               placeholder="Pick a name, any name.."
             />
-            {errors.name && <span>Resolver name is necessary.</span>}
+            {errors.name && <ErrorSpan>Resolver name is necessary.</ErrorSpan>}
           </Input>
           <Input>
             <Label>
               This is going to be a... <RequiredSpan>*</RequiredSpan>
             </Label>
-            <select>
+            <select
+              {...register('type', {
+                required: true,
+              })}
+            >
               <option value="Query">Query</option>
               <option value="Mutation">Mutation</option>
             </select>
           </Input>
           <Input>
-            <Label>..That will receive? (press Enter to add)</Label>
-            <input type="text" placeholder="IE name: String, amount: Number" />
-          </Input>
-          <Input>
             <Label>
-              And will return... <RequiredSpan>*</RequiredSpan>
+              That will return? (can choose from existing typeDefs)
+              <RequiredSpan>*</RequiredSpan>
             </Label>
             <input
+              {...register('returnType', {
+                required: true,
+              })}
               type="text"
               placeholder="String, [String], CustomType, etc.."
             />
+            {errors.returnType && (
+              <ErrorSpan>Return type is necessary.</ErrorSpan>
+            )}
           </Input>
           <Input>
-            <Label>The resolver itself</Label>
-            <textarea placeholder="Anything to start it off with?" />
+            <Label>
+              Description
+              <RequiredSpan>*</RequiredSpan>
+            </Label>
+            <input
+              type="text"
+              {...register('description', {
+                required: true,
+              })}
+              placeholder="IE 'create a new resolver and typeDef in fs.'"
+            />
+            {errors.description && (
+              <ErrorSpan>Return type is necessary.</ErrorSpan>
+            )}
+          </Input>
+          <Input>
+            <Label>
+              ..And will receive? (press Enter to add, can choose from existing
+              typeDefs)
+            </Label>
+            <MultiInputContainer>
+              <MultiInput type="" items={vars} setItems={setVars} />
+            </MultiInputContainer>
           </Input>
           <Input>
             <Label>Comment?</Label>
-            <input type="text" placeholder="// ...comment" />
+            <input
+              {...register('comment', {
+                required: false,
+              })}
+              type="text"
+              placeholder="// ...comment"
+            />
           </Input>
         </InputContainer>
         <ButtonContainer>
-          <CreateButton type="submit">Create</CreateButton>
+          <CreateButton type="button" onClick={handleSubmit(onSubmit)}>
+            Create
+          </CreateButton>
         </ButtonContainer>
       </HtmlForm>
     </Wrapper>
   );
 }
-
-const Wrapper = styled.div``;
-const HtmlForm = styled.form``;
-const Label = styled.label`
-  margin-bottom: 8px;
-`;
-const Input = styled.div`
-  letter-spacing: 1.5px;
-  margin: 6px;
-  display: flex;
-  flex-direction: column;
-  input,
-  textarea,
-  select {
-    padding: 4px;
-  }
-`;
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-const ButtonContainer = styled.div`
-  text-align: center;
-`;
-const CreateButton = styled.button`
-  box-shadow: inset 0px -3px 7px 0px #29bbff;
-  background: linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
-  background-color: #2dabf9;
-  border-radius: 3px;
-  border: 1px solid #0b0e07;
-  display: inline-block;
-  cursor: pointer;
-  color: #ffffff;
-  font-family: Arial;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 13px 26px;
-  text-decoration: none;
-  text-shadow: 0px 1px 0px #263666;
-  margin-top: 10px;
-  &:hover {
-    background: linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
-    background-color: #0688fa;
-  }
-  &:active {
-    position: relative;
-    top: 1px;
-  }
-`;
-const Title = styled.h3`
-  text-align: center;
-  font-weight: normal;
-  letter-spacing: 1px;
-  -webkit-animation-name: slideInDown;
-  animation-name: slideInDown;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  @-webkit-keyframes slideInDown {
-    0% {
-      -webkit-transform: translateY(-100%);
-      transform: translateY(-100%);
-      visibility: visible;
-    }
-    100% {
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
-    }
-  }
-  @keyframes slideInDown {
-    0% {
-      -webkit-transform: translateY(-100%);
-      transform: translateY(-100%);
-      visibility: visible;
-    }
-    100% {
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
-    }
-  }
-`;
-const RequiredSpan = styled.span`
-  padding-left: 5px;
-  color: #ff3300 !important;
-`;
