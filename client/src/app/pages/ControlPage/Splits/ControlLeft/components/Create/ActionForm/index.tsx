@@ -19,7 +19,10 @@ import {
 } from './Styles';
 // import { messages } from './messages';
 
-interface Props {}
+interface Props {
+  setRefresh;
+  refresh;
+}
 
 export function ActionForm(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,6 +42,9 @@ export function ActionForm(props: Props) {
       mutations.mCreateResolver,
       data,
     );
+    if (res === 'OK') {
+      props.setRefresh(!props.refresh);
+    }
   };
 
   return (

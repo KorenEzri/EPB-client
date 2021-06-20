@@ -27,7 +27,7 @@ export const mutations = {
     mutation createResolver(
       $name: String
       $comment: String
-      $resolver: String
+      $description: String
       $returnType: String
       $type: String
       $vars: [String]
@@ -36,7 +36,7 @@ export const mutations = {
         options: {
           name: $name
           comment: $comment
-          resolver: $resolver
+          description: $description
           returnType: $returnType
           type: $type
           vars: $vars

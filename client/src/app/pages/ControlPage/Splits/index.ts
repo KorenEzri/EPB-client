@@ -1,2 +1,2 @@
-export * from './ControlRight/Loadable';
+export * from './ControlRight';
 export * from './ControlLeft/Loadable';

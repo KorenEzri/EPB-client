@@ -5,7 +5,10 @@ import { useForm } from 'react-hook-form';
 import { MultiInput } from 'app/components';
 // import { messages } from './messages';
 
-interface Props {}
+interface Props {
+  setRefresh;
+  refresh;
+}
 
 export function CustomTypeForm(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

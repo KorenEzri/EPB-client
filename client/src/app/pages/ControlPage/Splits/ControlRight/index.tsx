@@ -8,7 +8,9 @@ import { getterSetterQuery, queries } from '../../../../network';
 import Prism from 'prismjs';
 // import { messages } from './messages';
 
-interface Props {}
+interface Props {
+  refresh;
+}
 enum Tabs {
   LIVECODE,
   PLAYGROUND,
@@ -16,6 +18,10 @@ enum Tabs {
 enum SubTabs {
   RESOLVERS,
   TYPEDEFS,
+}
+function useForceUpdate() {
+  const [value, setValue] = React.useState(0); // integer state
+  return () => setValue(value => value + 1); // update the state to force render
 }
 
 export function ControlRight(props: Props) {
@@ -26,20 +32,25 @@ export function ControlRight(props: Props) {
   const [subTab, setSubTab] = React.useState<SubTabs>(SubTabs.RESOLVERS);
   const [resolvers, setResolvers] = React.useState('');
   const [typeDefs, setTypeDefs] = React.useState('');
+  const forceUpdate = useForceUpdate();
+
+  const updateCodeTree = async () => {
+    try {
+      await getterSetterQuery(client, queries.qGetResolvers, setResolvers);
+      Prism.highlightAll();
+    } catch ({ message }) {
+      console.log(message);
+    }
+    try {
+      await getterSetterQuery(client, queries.qTypeDefs, setTypeDefs);
+    } catch ({ message }) {
+      console.log(message);
+    }
+  };
 
   React.useEffect(() => {
     (async () => {
-      try {
-        await getterSetterQuery(client, queries.qGetResolvers, setResolvers);
-        Prism.highlightAll();
-      } catch ({ message }) {
-        console.log(message);
-      }
-      try {
-        await getterSetterQuery(client, queries.qTypeDefs, setTypeDefs);
-      } catch ({ message }) {
-        console.log(message);
-      }
+      await updateCodeTree();
     })();
   });
 

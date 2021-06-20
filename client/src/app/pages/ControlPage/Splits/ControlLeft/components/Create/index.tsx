@@ -5,7 +5,10 @@ import { ActionForm } from './ActionForm/Loadable';
 import { CustomTypeForm } from './CustomTypeForm/Loadable';
 // import { messages } from './messages';
 
-interface Props {}
+interface Props {
+  setRefresh;
+  refresh;
+}
 interface ActiveTab {
   isActive: boolean;
 }
@@ -41,9 +44,9 @@ export function Create(props: Props) {
         </HeaderButton>
       </HeaderContainer>
       {tab === Tabs.ACTION ? (
-        <ActionForm />
+        <ActionForm setRefresh={props.setRefresh} refresh={props.refresh} />
       ) : tab === Tabs.CUSTOMTYPE ? (
-        <CustomTypeForm />
+        <CustomTypeForm setRefresh={props.setRefresh} refresh={props.refresh} />
       ) : null}
     </Wrapper>
   );

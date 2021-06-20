@@ -2,12 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 // import { useTranslation } from 'react-i18next';
 // import { messages } from './messages';
-
-const removeHightlight = () => {
-  const allTargs = document.querySelectorAll('highlight');
-  allTargs.forEach(target => target?.classList.remove('highlight'));
-  return;
-};
+// const removeHighlight = () => {
+//   const allTargs = document.querySelectorAll('highlight');
+//   allTargs.forEach(target => target?.classList.remove('highlight'));
+//   return;
+// };
 // function highlight(text: string, remove?: boolean) {
 //   if (remove) {
 //     removeHightlight();
@@ -45,12 +44,14 @@ export function Action(props: Props) {
           if (!text) return;
           const allComments = document.querySelectorAll('.comment');
           allComments.forEach(comment => {
-            if (
-              comment instanceof HTMLElement &&
-              comment?.textContent?.split('//')[1].trim() ===
-                `Action: ${text.toLowerCase()}`
-            ) {
-              comment.classList.add('highlight');
+            if (comment instanceof HTMLElement) {
+              if (
+                comment?.textContent?.split('//')[1].trim() ===
+                  `Action: ${text}` ||
+                comment?.textContent?.split('//')[1].trim() ===
+                  `Action: ${text.toLowerCase()}`
+              )
+                comment.classList.add('highlight');
             }
           });
         }

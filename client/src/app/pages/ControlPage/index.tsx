@@ -8,6 +8,7 @@ import { ControlLeft, ControlRight } from './Splits';
 interface Props {}
 
 export function ControlPage(props: Props) {
+  const [refresh, setRefresh] = React.useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const { t, i18n } = useTranslation();
 
@@ -16,10 +17,10 @@ export function ControlPage(props: Props) {
       {/* {t('')} */}
       {/*  {t(...messages.someThing())}  */}
       <LeftWrapper>
-        <ControlLeft />
+        <ControlLeft setRefresh={setRefresh} refresh={refresh} />
       </LeftWrapper>
       <RightWrapper>
-        <ControlRight />
+        <ControlRight refresh={refresh} />
       </RightWrapper>
     </Container>
   );

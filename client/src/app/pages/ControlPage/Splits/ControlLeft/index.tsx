@@ -5,7 +5,10 @@ import * as components from './components';
 import { useApolloClient } from '@apollo/client';
 import { getterSetterQuery, queries } from '../../../../network';
 // import { messages } from './messages';
-interface Props {}
+interface Props {
+  setRefresh;
+  refresh;
+}
 interface ActiveTab {
   isActive: boolean;
 }
@@ -73,7 +76,10 @@ export function ControlLeft(props: Props) {
         {tab === Tabs.ACTIONS ? (
           <components.ActionList actions={actions} />
         ) : tab === Tabs.CREATE ? (
-          <components.Create />
+          <components.Create
+            setRefresh={props.setRefresh}
+            refresh={props.refresh}
+          />
         ) : tab === Tabs.UPDATE ? (
           <components.Update />
         ) : tab === Tabs.DELETE ? (
