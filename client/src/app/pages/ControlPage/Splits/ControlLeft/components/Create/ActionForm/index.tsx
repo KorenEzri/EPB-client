@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-// import { useTranslation } from 'react-i18next';
 import { MultiInput } from '../../../../../../../components';
+import { getterSetterQuery, queries } from 'app/network';
 import { getterSetterMutation, mutations } from 'app/network';
+import { Spinner, SubmitLoader } from 'app/components';
 import { useApolloClient } from '@apollo/client';
 import {
   Wrapper,
@@ -17,33 +18,45 @@ import {
   ButtonContainer,
   CreateButton,
 } from './Styles';
+// import { useTranslation } from 'react-i18next';
 // import { messages } from './messages';
-
-interface Props {
-  setRefresh;
-  refresh;
-}
-
+interface Props {}
 export function ActionForm(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const { t, i18n } = useTranslation();
   const client = useApolloClient();
+  const [resolverNames, setResolverNames] = React.useState<string[]>([]);
+  const [spinnerShow, setSpinnerShow] = React.useState(false);
+  const [error, setError] = React.useState('');
+  const validateName = (v: string) =>
+    resolverNames.includes(v) ? false : true;
   const [vars, setVars] = React.useState({ items: [] });
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
   } = useForm();
+  React.useEffect(() => {
+    (async () => {
+      await getterSetterQuery(client, queries.qResolverNames, setResolverNames);
+    })();
+  });
   const onSubmit = async data => {
-    data.vars = vars.items;
-    console.log(data);
-    const res = await getterSetterMutation(
-      client,
-      mutations.mCreateResolver,
-      data,
-    );
-    if (res === 'OK') {
-      props.setRefresh(!props.refresh);
+    try {
+      setSpinnerShow(true);
+      data.vars = vars.items;
+      const res = await getterSetterMutation(
+        client,
+        mutations.mCreateResolver,
+        data,
+      );
+      setSpinnerShow(false);
+      if (res !== 'OK') {
+        setError(res);
+      }
+    } catch ({ message }) {
+      setSpinnerShow(false);
+      setError(message);
     }
   };
 
@@ -65,11 +78,18 @@ export function ActionForm(props: Props) {
             <input
               {...register('name', {
                 required: true,
+                validate: {
+                  unique: validateName,
+                },
               })}
               type="text"
               placeholder="Pick a name, any name.."
             />
-            {errors.name && <ErrorSpan>Resolver name is necessary.</ErrorSpan>}
+            {errors.name && errors.name.type === 'unique' ? (
+              <ErrorSpan>Resolver name must be unique.</ErrorSpan>
+            ) : errors.name ? (
+              <ErrorSpan>Resolver name is necessary.</ErrorSpan>
+            ) : null}
           </Input>
           <Input>
             <Label>
@@ -137,9 +157,16 @@ export function ActionForm(props: Props) {
           </Input>
         </InputContainer>
         <ButtonContainer>
-          <CreateButton type="button" onClick={handleSubmit(onSubmit)}>
-            Create
-          </CreateButton>
+          <Spinner
+            VisualComponent={SubmitLoader}
+            show={spinnerShow}
+            error={error}
+            setError={setError}
+          >
+            <CreateButton type="button" onClick={handleSubmit(onSubmit)}>
+              Create
+            </CreateButton>
+          </Spinner>
         </ButtonContainer>
       </HtmlForm>
     </Wrapper>

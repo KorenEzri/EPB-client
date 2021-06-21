@@ -1,16 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-// import { useTranslation } from 'react-i18next';
 import { useApolloClient } from '@apollo/client';
 import { LiveCode } from './StyledCode';
 import { Playground } from './Playground/Loadable';
 import { getterSetterQuery, queries } from '../../../../network';
 import Prism from 'prismjs';
+// import { useTranslation } from 'react-i18next';
 // import { messages } from './messages';
-
-interface Props {
-  refresh;
-}
+interface Props {}
 enum Tabs {
   LIVECODE,
   PLAYGROUND,
@@ -19,11 +16,6 @@ enum SubTabs {
   RESOLVERS,
   TYPEDEFS,
 }
-function useForceUpdate() {
-  const [value, setValue] = React.useState(0); // integer state
-  return () => setValue(value => value + 1); // update the state to force render
-}
-
 export function ControlRight(props: Props) {
   const client = useApolloClient();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -32,25 +24,20 @@ export function ControlRight(props: Props) {
   const [subTab, setSubTab] = React.useState<SubTabs>(SubTabs.RESOLVERS);
   const [resolvers, setResolvers] = React.useState('');
   const [typeDefs, setTypeDefs] = React.useState('');
-  const forceUpdate = useForceUpdate();
 
   const updateCodeTree = async () => {
-    try {
-      await getterSetterQuery(client, queries.qGetResolvers, setResolvers);
-      Prism.highlightAll();
-    } catch ({ message }) {
-      console.log(message);
-    }
-    try {
-      await getterSetterQuery(client, queries.qTypeDefs, setTypeDefs);
-    } catch ({ message }) {
-      console.log(message);
-    }
+    await getterSetterQuery(client, queries.qGetResolvers, setResolvers);
+    Prism.highlightAll();
+    await getterSetterQuery(client, queries.qTypeDefs, setTypeDefs);
   };
 
   React.useEffect(() => {
     (async () => {
-      await updateCodeTree();
+      try {
+        await updateCodeTree();
+      } catch ({ message }) {
+        setResolvers(message);
+      }
     })();
   });
 

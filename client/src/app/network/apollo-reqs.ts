@@ -21,6 +21,11 @@ export const queries = {
       getActions
     }
   `,
+  qResolverNames: gql`
+    query getAllResolverNames {
+      getAllResolverNames
+    }
+  `,
 };
 export const mutations = {
   mCreateResolver: gql`
@@ -41,6 +46,17 @@ export const mutations = {
           type: $type
           vars: $vars
         }
+      )
+    }
+  `,
+  mCreateInterface: gql`
+    mutation createCustomType(
+      $properties: [String]
+      $name: String
+      $comment: String
+    ) {
+      createCustomType(
+        options: { properties: $properties, name: $name, comment: $comment }
       )
     }
   `,

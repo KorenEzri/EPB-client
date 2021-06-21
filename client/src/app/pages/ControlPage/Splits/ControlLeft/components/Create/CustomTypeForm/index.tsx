@@ -1,42 +1,86 @@
 import * as React from 'react';
-import styled from 'styled-components/macro';
 import { useForm } from 'react-hook-form';
 // import { useTranslation } from 'react-i18next';
 import { MultiInput } from 'app/components';
+import {
+  ButtonContainer,
+  CreateButton,
+  ErrorSpan,
+  HtmlForm,
+  Input,
+  InputContainer,
+  Label,
+  MultiInputContainer,
+  RequiredSpan,
+  Title,
+  Wrapper,
+  CheckBox,
+} from '../StyledComponents';
+import { Spinner, SubmitLoader } from 'app/components';
+import { useApolloClient } from '@apollo/client';
+import { getterSetterQuery, queries } from 'app/network';
+import { getterSetterMutation, mutations } from 'app/network';
 // import { messages } from './messages';
 
-interface Props {
-  setRefresh;
-  refresh;
-}
+interface Props {}
 
 export function CustomTypeForm(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const { t, i18n } = useTranslation();
+  const client = useApolloClient();
+  const [resolverNames, setResolverNames] = React.useState<string[]>([]);
+  const [spinnerShow, setSpinnerShow] = React.useState(false);
+  const [dbSchema, setDbSchema] = React.useState(false);
+  const [typeDef, setTypeDef] = React.useState(false);
+  const [error, setError] = React.useState('');
   const [properties, setProperties] = React.useState({ items: [] });
-  const [select, setSelect] = React.useState('');
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
   } = useForm();
+  const validateName = (v: string) =>
+    resolverNames.includes(v) ? false : true;
   // placeholder="name: String; workPlace: CustomType3;"
   const onSubmit = async data => {
-    if (!properties.items[0]) {
-      console.log('here');
-      errors.properties = '1';
-      console.log(errors);
-      return;
+    try {
+      if (!properties.items.length) {
+        setError('Properties are necessary to compose an interface!');
+        return;
+      }
+      setSpinnerShow(true);
+      data.properties = properties.items;
+      data.typeDef = typeDef;
+      data.dbSchema = dbSchema;
+      const res = await getterSetterMutation(
+        client,
+        mutations.mCreateInterface,
+        data,
+      );
+      setSpinnerShow(false);
+      if (res !== 'OK') {
+        setError(res);
+      }
+    } catch ({ message }) {
+      setSpinnerShow(false);
+      setError(message);
     }
-    console.log(data);
   };
-
+  React.useEffect(() => {
+    (async () => {
+      await getterSetterQuery(client, queries.qResolverNames, setResolverNames);
+    })();
+  });
   return (
     <Wrapper>
       {/* {t('')} */}
       {/*  {t(...messages.someThing())}  */}
       <Title>Create a custom type</Title>
-      <HtmlForm onSubmit={handleSubmit(onSubmit)}>
+      <HtmlForm
+        onSubmit={e => {
+          e.preventDefault();
+        }}
+      >
         <InputContainer>
           <Input>
             <Label>
@@ -45,13 +89,19 @@ export function CustomTypeForm(props: Props) {
             <input
               {...register('name', {
                 required: true,
+                validate: {
+                  unique: validateName,
+                },
               })}
               type="text"
               placeholder="Pick a name, any name.."
             />
-            {errors.name && <ErrorSpan>Type name is necessary.</ErrorSpan>}
-          </Input>
-          <Input>
+            {errors.name && errors.name.type === 'unique' ? (
+              <ErrorSpan>Type name must be unique.</ErrorSpan>
+            ) : errors.name ? (
+              <ErrorSpan>Type name is necessary.</ErrorSpan>
+            ) : null}
+            <Input></Input>
             <Label>
               Properties (Press Enter to add) <RequiredSpan>*</RequiredSpan>
             </Label>
@@ -64,109 +114,64 @@ export function CustomTypeForm(props: Props) {
           </Input>
           <Input>
             <Label>Comment?</Label>
-            <input type="text" placeholder="// ...comment" />
+            <input
+              {...register('comment')}
+              type="text"
+              placeholder="// ...comment"
+            />
+          </Input>
+          <Input>
+            <CheckBox
+              onClick={() => {
+                setDbSchema(!dbSchema);
+              }}
+            >
+              <div className="custom-checkbox">
+                <input
+                  type="checkbox"
+                  className="custom-checkbox__input"
+                  id="chkbox1"
+                  checked={dbSchema}
+                />
+                <Label className="custom-checkbox__label">
+                  Also create a DB schema.
+                </Label>
+              </div>
+            </CheckBox>
+          </Input>
+          <Input>
+            <CheckBox
+              onClick={() => {
+                setTypeDef(!typeDef);
+              }}
+            >
+              <div className="custom-checkbox">
+                <input
+                  type="checkbox"
+                  className="custom-checkbox__input"
+                  checked={typeDef}
+                  id="chkbox1"
+                />
+                <Label className="custom-checkbox__label">
+                  Also create a GraphQL type definition.
+                </Label>
+              </div>
+            </CheckBox>
           </Input>
         </InputContainer>
         <ButtonContainer>
-          <CreateButton type="submit">Create</CreateButton>
+          <Spinner
+            VisualComponent={SubmitLoader}
+            show={spinnerShow}
+            error={error}
+            setError={setError}
+          >
+            <CreateButton type="button" onClick={handleSubmit(onSubmit)}>
+              Create
+            </CreateButton>
+          </Spinner>
         </ButtonContainer>
       </HtmlForm>
     </Wrapper>
   );
 }
-
-const Wrapper = styled.div``;
-const HtmlForm = styled.form``;
-const Label = styled.label`
-  margin-bottom: 8px;
-`;
-const Input = styled.div`
-  letter-spacing: 1.5px;
-  margin: 6px;
-  display: flex;
-  flex-direction: column;
-  input,
-  textarea,
-  select {
-    padding: 6px;
-    width: 60%;
-    background-color: #0f202d;
-    color: #85bcd8;
-  }
-`;
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-const ButtonContainer = styled.div`
-  text-align: center;
-`;
-const CreateButton = styled.button`
-  box-shadow: inset 0px -3px 7px 0px #29bbff;
-  background: linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
-  background-color: #2dabf9;
-  border-radius: 3px;
-  border: 1px solid #0b0e07;
-  display: inline-block;
-  cursor: pointer;
-  color: #ffffff;
-  font-family: Arial;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 13px 26px;
-  text-decoration: none;
-  text-shadow: 0px 1px 0px #263666;
-  margin-top: 10px;
-  &:hover {
-    background: linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
-    background-color: #0688fa;
-  }
-  &:active {
-    position: relative;
-    top: 1px;
-  }
-`;
-const Title = styled.h3`
-  text-align: center;
-  font-weight: normal;
-  letter-spacing: 1px;
-  -webkit-animation-name: slideInDown;
-  animation-name: slideInDown;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  @-webkit-keyframes slideInDown {
-    0% {
-      -webkit-transform: translateY(-100%);
-      transform: translateY(-100%);
-      visibility: visible;
-    }
-    100% {
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
-    }
-  }
-  @keyframes slideInDown {
-    0% {
-      -webkit-transform: translateY(-100%);
-      transform: translateY(-100%);
-      visibility: visible;
-    }
-    100% {
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
-    }
-  }
-`;
-const RequiredSpan = styled.span`
-  padding-left: 5px;
-  color: #ff3300 !important;
-`;
-const MultiInputContainer = styled.div`
-  margin-top: -10px;
-`;
-const ErrorSpan = styled.span`
-  margin-top: 5px;
-  color: #ff3300 !important;
-`;

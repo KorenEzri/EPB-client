@@ -68,7 +68,7 @@ export function ItemInput({ items, setItems }) {
       </ul>
       <input
         type="text"
-        placeholder="Add items..."
+        placeholder="amount: Int, currency: String.."
         value={textValue}
         onChange={handleTextChange}
         onKeyUp={handleKeyup}

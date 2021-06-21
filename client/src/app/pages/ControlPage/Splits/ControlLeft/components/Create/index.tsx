@@ -3,18 +3,17 @@ import styled from 'styled-components/macro';
 // import { useTranslation } from 'react-i18next';
 import { ActionForm } from './ActionForm/Loadable';
 import { CustomTypeForm } from './CustomTypeForm/Loadable';
+import { SchemaForm } from './SchemaForm/Loadable';
 // import { messages } from './messages';
 
-interface Props {
-  setRefresh;
-  refresh;
-}
+interface Props {}
 interface ActiveTab {
   isActive: boolean;
 }
 enum Tabs {
   ACTION,
   CUSTOMTYPE,
+  SCHEMA,
 }
 export function Create(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,11 +41,21 @@ export function Create(props: Props) {
         >
           a custom type
         </HeaderButton>
+        <HeaderButton
+          isActive={tab === Tabs.SCHEMA}
+          onClick={() => {
+            setTab(Tabs.SCHEMA);
+          }}
+        >
+          a DB schema
+        </HeaderButton>
       </HeaderContainer>
       {tab === Tabs.ACTION ? (
-        <ActionForm setRefresh={props.setRefresh} refresh={props.refresh} />
+        <ActionForm />
       ) : tab === Tabs.CUSTOMTYPE ? (
-        <CustomTypeForm setRefresh={props.setRefresh} refresh={props.refresh} />
+        <CustomTypeForm />
+      ) : tab === Tabs.SCHEMA ? (
+        <SchemaForm />
       ) : null}
     </Wrapper>
   );
@@ -70,7 +79,7 @@ const HeaderButton = styled.button<ActiveTab>`
   cursor: pointer;
   color: whitesmoke;
   font-family: Arial;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   height: 30px;
   width: 100%;
