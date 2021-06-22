@@ -35,7 +35,7 @@ export const mutations = {
       $description: String
       $returnType: String
       $type: String
-      $vars: [String]
+      $properties: [String]
     ) {
       createResolver(
         options: {
@@ -44,7 +44,7 @@ export const mutations = {
           description: $description
           returnType: $returnType
           type: $type
-          vars: $vars
+          properties: $properties
         }
       )
     }
@@ -54,9 +54,42 @@ export const mutations = {
       $properties: [String]
       $name: String
       $comment: String
+      $typeDef: Boolean
+      $dbSchema: Boolean
+      $type: String
     ) {
       createCustomType(
-        options: { properties: $properties, name: $name, comment: $comment }
+        options: {
+          properties: $properties
+          name: $name
+          comment: $comment
+          typeDef: $typeDef
+          dbSchema: $dbSchema
+          type: $type
+        }
+      )
+    }
+  `,
+  mCreateSchema: gql`
+    mutation createSchema(
+      $properties: [String]
+      $name: String
+      $comment: String
+      $typeDef: Boolean
+      $dbSchema: Boolean
+      $type: String
+      $uniqueProperty: String
+    ) {
+      createSchema(
+        options: {
+          properties: $properties
+          name: $name
+          comment: $comment
+          typeDef: $typeDef
+          dbSchema: $dbSchema
+          type: $type
+          uniqueIdentifiers: $uniqueIdentifiers
+        }
       )
     }
   `,

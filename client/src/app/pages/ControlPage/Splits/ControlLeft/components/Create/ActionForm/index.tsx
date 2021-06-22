@@ -28,9 +28,9 @@ export function ActionForm(props: Props) {
   const [resolverNames, setResolverNames] = React.useState<string[]>([]);
   const [spinnerShow, setSpinnerShow] = React.useState(false);
   const [error, setError] = React.useState('');
+  const [vars, setVars] = React.useState({ items: [] });
   const validateName = (v: string) =>
     resolverNames.includes(v) ? false : true;
-  const [vars, setVars] = React.useState({ items: [] });
   const {
     register,
     handleSubmit,
@@ -41,10 +41,29 @@ export function ActionForm(props: Props) {
       await getterSetterQuery(client, queries.qResolverNames, setResolverNames);
     })();
   });
+  const checkTypes = (types: string[]) => {
+    return types
+      .map((type: string) => {
+        if (type.split('|').length > 1) {
+          if (!(type.split(':').length > 1)) return `returnType: ${type}`;
+          return type;
+        }
+      })
+      .filter(v => v != null);
+  };
   const onSubmit = async data => {
+    const invalidOrTypes = checkTypes([data.returnType])?.concat(
+      checkTypes(vars.items),
+    );
+    if (invalidOrTypes.length) {
+      const res = window.prompt(
+        `It seems you have chosen to use the "||" or "|" operator in your type definitions.\n\nWhile auto-generation of Typescript interfaces and DB schemas supports these operators, auto-generation of GraphQL scalar types is not supported yet. If you proceed, you'll have to create them yourself.\nAre you sure you want to proceed?\n\nTypes affected:\n${invalidOrTypes}\n\nType "OK" to confirm.`,
+      );
+      if (res !== 'OK') return;
+    }
     try {
       setSpinnerShow(true);
-      data.vars = vars.items;
+      data.properties = vars.items;
       const res = await getterSetterMutation(
         client,
         mutations.mCreateResolver,

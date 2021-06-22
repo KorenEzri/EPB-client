@@ -34,15 +34,33 @@ export function CustomTypeForm(props: Props) {
   const [typeDef, setTypeDef] = React.useState(false);
   const [error, setError] = React.useState('');
   const [properties, setProperties] = React.useState({ items: [] });
+  const [uniqueIdentifiers, setUniqueIdentifiers] = React.useState(['']);
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
   } = useForm();
+  const checkTypes = (types: string[]) => {
+    return types
+      .map((type: string) => {
+        if (type.split('|').length > 1) {
+          if (!(type.split(':').length > 1)) return `returnType: ${type}`;
+          return type;
+        }
+      })
+      .filter(v => v != null);
+  };
   const validateName = (v: string) =>
     resolverNames.includes(v) ? false : true;
   // placeholder="name: String; workPlace: CustomType3;"
   const onSubmit = async data => {
+    const invalidOrTypes = checkTypes(properties.items);
+    if (invalidOrTypes.length) {
+      const res = window.prompt(
+        `It seems you have chosen to use the "||" or "|" operator in your type definitions.\n\nWhile auto-generation of Typescript interfaces and DB schemas supports these operators, auto-generation of GraphQL scalar types is not supported yet. If you proceed, you'll have to create them yourself.\nAre you sure you want to proceed?\n\nTypes affected:\n${invalidOrTypes}\n\nType "OK" to confirm.`,
+      );
+      if (res !== 'OK') return;
+    }
     try {
       if (!properties.items.length) {
         setError('Properties are necessary to compose an interface!');
@@ -52,15 +70,30 @@ export function CustomTypeForm(props: Props) {
       data.properties = properties.items;
       data.typeDef = typeDef;
       data.dbSchema = dbSchema;
+      data.uniqueIdentifiers = uniqueIdentifiers;
+      if (!data.uniqueProperty) {
+        data.uniqueProperty = 'None';
+      } else {
+        data.uniqueProperty = data.uniqueProperty.split(':')[0];
+      }
+      if (!data.type) data.type = 'null';
       const res = await getterSetterMutation(
         client,
         mutations.mCreateInterface,
         data,
       );
-      setSpinnerShow(false);
-      if (res !== 'OK') {
-        setError(res);
+      if (data.dbSchema) {
+        console.log(data);
+        const schemaRes = await getterSetterMutation(
+          client,
+          mutations.mCreateSchema,
+          data,
+        );
+        if (schemaRes !== 'OK') setError(schemaRes);
+        setSpinnerShow(false);
       }
+      setSpinnerShow(false);
+      if (res !== 'OK') setError(res);
     } catch ({ message }) {
       setSpinnerShow(false);
       setError(message);
@@ -71,6 +104,19 @@ export function CustomTypeForm(props: Props) {
       await getterSetterQuery(client, queries.qResolverNames, setResolverNames);
     })();
   });
+  const handleSelectChange = (e: {
+    target: { selectedOptions: Iterable<unknown> | ArrayLike<unknown> };
+  }) => {
+    const option = Array.from(e.target.selectedOptions)[0];
+    if (!(option instanceof HTMLOptionElement)) return;
+    const optionValue = option.value;
+    if (uniqueIdentifiers.includes(optionValue)) {
+      const newCategoryList = uniqueIdentifiers.filter(
+        (prop: string) => prop !== optionValue,
+      );
+      setUniqueIdentifiers(newCategoryList);
+    } else setUniqueIdentifiers(uniqueIdentifiers.concat([optionValue]));
+  };
   return (
     <Wrapper>
       {/* {t('')} */}
@@ -127,6 +173,7 @@ export function CustomTypeForm(props: Props) {
               }}
             >
               <div className="custom-checkbox">
+                <br />
                 <input
                   type="checkbox"
                   className="custom-checkbox__input"
@@ -138,6 +185,27 @@ export function CustomTypeForm(props: Props) {
                 </Label>
               </div>
             </CheckBox>
+            {dbSchema && (
+              <Input>
+                <Label>Unique property?</Label>
+                <select
+                  multiple={true}
+                  onChange={handleSelectChange}
+                  value={uniqueIdentifiers}
+                >
+                  {properties.items?.map((property: string) => (
+                    <option value={property}>{property}</option>
+                  ))}
+                </select>
+                <ButtonContainer
+                  onClick={() => {
+                    setUniqueIdentifiers(['']);
+                  }}
+                >
+                  Clear
+                </ButtonContainer>
+              </Input>
+            )}
           </Input>
           <Input>
             <CheckBox
@@ -157,6 +225,16 @@ export function CustomTypeForm(props: Props) {
                 </Label>
               </div>
             </CheckBox>
+            {typeDef && (
+              <Input>
+                <Label>'input' or 'type'?</Label>
+                <input
+                  {...register('type')}
+                  type="text"
+                  placeholder="input || type"
+                />
+              </Input>
+            )}
           </Input>
         </InputContainer>
         <ButtonContainer>

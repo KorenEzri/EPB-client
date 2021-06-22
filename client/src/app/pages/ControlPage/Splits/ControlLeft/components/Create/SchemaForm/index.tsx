@@ -22,14 +22,49 @@ interface Props {}
 export function SchemaForm(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const { t, i18n } = useTranslation();
+  const [uniqueIdentifiers, setUniqueIdentifiers] = React.useState(['']);
   const [properties, setProperties] = React.useState({ items: [] });
+  const handleSelectChange = (e: {
+    target: { selectedOptions: Iterable<unknown> | ArrayLike<unknown> };
+  }) => {
+    const option = Array.from(e.target.selectedOptions)[0];
+    if (!(option instanceof HTMLOptionElement)) return;
+    const optionValue = option.value;
+    if (uniqueIdentifiers.includes(optionValue)) {
+      const newCategoryList = uniqueIdentifiers.filter(
+        (prop: string) => prop !== optionValue,
+      );
+      setUniqueIdentifiers(newCategoryList);
+    } else setUniqueIdentifiers(uniqueIdentifiers.concat([optionValue]));
+  };
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
   } = useForm();
+  const checkTypes = (types: string[]) => {
+    return types
+      .map((type: string) => {
+        if (type?.split('|').length > 1) {
+          if (!(type?.split(':').length > 1)) return `returnType: ${type}`;
+          return type;
+        }
+      })
+      .filter(v => v != null);
+  };
   // placeholder="name: String; workPlace: CustomType3;"
   const onSubmit = async data => {
+    const invalidOrTypes = checkTypes([data.returnType])?.concat(
+      checkTypes(properties.items),
+    );
+    if (invalidOrTypes.length) {
+      const res = window.prompt(
+        `It seems you have chosen to use the "||" or "|" operator in your type definitions.\n\nWhile auto-generation of Typescript interfaces and DB schemas supports these operators, auto-generation of GraphQL scalar types is not supported yet. If you proceed, you'll have to create them yourself.\nAre you sure you want to proceed?\n\nTypes affected:\n${invalidOrTypes}\n\nType "OK" to confirm.`,
+      );
+      if (res !== 'OK') return;
+    }
+    data.uniqueIdentifiers = uniqueIdentifiers;
+    data.properties = properties;
     if (!properties.items[0]) {
       console.log('here');
       errors.properties = '1';
@@ -70,8 +105,33 @@ export function SchemaForm(props: Props) {
             )}
           </Input>
           <Input>
+            <Label>Unique property?</Label>
+            <select
+              multiple={true}
+              onChange={handleSelectChange}
+              value={uniqueIdentifiers}
+            >
+              {properties.items?.map((property: string, index: number) => (
+                <option value={property} key={`${index}${property}`}>
+                  {property}
+                </option>
+              ))}
+            </select>
+            <ButtonContainer
+              onClick={() => {
+                setUniqueIdentifiers(['']);
+              }}
+            >
+              Clear
+            </ButtonContainer>
+          </Input>
+          <Input>
             <Label>Comment?</Label>
-            <input type="text" placeholder="// ...comment" />
+            <input
+              {...register('comment', {})}
+              type="text"
+              placeholder="// ...comment"
+            />
           </Input>
         </InputContainer>
         <ButtonContainer>
