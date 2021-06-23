@@ -78,7 +78,7 @@ export const mutations = {
       $typeDef: Boolean
       $dbSchema: Boolean
       $type: String
-      $uniqueProperty: String
+      $uniqueIdentifiers: [String]
     ) {
       createSchema(
         options: {

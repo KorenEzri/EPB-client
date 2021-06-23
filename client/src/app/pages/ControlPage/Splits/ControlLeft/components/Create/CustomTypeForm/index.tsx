@@ -83,7 +83,6 @@ export function CustomTypeForm(props: Props) {
         data,
       );
       if (data.dbSchema) {
-        console.log(data);
         const schemaRes = await getterSetterMutation(
           client,
           mutations.mCreateSchema,
@@ -93,7 +92,7 @@ export function CustomTypeForm(props: Props) {
         setSpinnerShow(false);
       }
       setSpinnerShow(false);
-      if (res !== 'OK') setError(res);
+      // if (res !== 'OK') setError(res);
     } catch ({ message }) {
       setSpinnerShow(false);
       setError(message);
