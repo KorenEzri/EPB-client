@@ -3,27 +3,20 @@ import { useForm } from 'react-hook-form';
 import { MultiInput } from '../../../../../../../components';
 import { getterSetterQuery, queries } from 'app/network';
 import { getterSetterMutation, mutations } from 'app/network';
+import {
+  Label,
+  CreateButton,
+  ButtonContainer,
+  ErrorSpan,
+  RequiredSpan,
+  Input,
+  InputContainer,
+} from 'app/components/formStyles';
 import { Spinner, SubmitLoader } from 'app/components';
 import { useApolloClient } from '@apollo/client';
-import {
-  Wrapper,
-  Title,
-  HtmlForm,
-  InputContainer,
-  Input,
-  Label,
-  RequiredSpan,
-  ErrorSpan,
-  MultiInputContainer,
-  ButtonContainer,
-  CreateButton,
-} from './Styles';
-// import { useTranslation } from 'react-i18next';
-// import { messages } from './messages';
+import { Wrapper, Title, HtmlForm, MultiInputContainer } from './Styles';
 interface Props {}
 export function ActionForm(props: Props) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const { t, i18n } = useTranslation();
   const client = useApolloClient();
   const [resolverNames, setResolverNames] = React.useState<string[]>([]);
   const [spinnerShow, setSpinnerShow] = React.useState(false);

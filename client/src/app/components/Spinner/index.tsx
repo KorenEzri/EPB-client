@@ -24,8 +24,10 @@ export function Spinner({ children, VisualComponent, show, error, setError }) {
             setError('');
           }}
         />
-        {error ? (
+        {error && error.split(' ').includes('successfully') ? (
           <p>Error: {error}</p>
+        ) : error ? (
+          <p>{error}</p>
         ) : (
           <p>Error: Internal server error. Please try again later.</p>
         )}

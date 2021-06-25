@@ -12,7 +12,7 @@ interface ActiveTab {
 enum Tabs {
   ACTIONS,
   CREATE,
-  UPDATE,
+  ADD,
   DELETE,
 }
 export function ControlLeft(props: Props) {
@@ -53,12 +53,12 @@ export function ControlLeft(props: Props) {
           Create
         </HeaderButton>
         <HeaderButton
-          isActive={tab === Tabs.UPDATE}
+          isActive={tab === Tabs.ADD}
           onClick={() => {
-            setTab(Tabs.UPDATE);
+            setTab(Tabs.ADD);
           }}
         >
-          Update
+          Add
         </HeaderButton>
         <HeaderButton
           isActive={tab === Tabs.DELETE}
@@ -74,8 +74,8 @@ export function ControlLeft(props: Props) {
           <components.ActionList actions={actions} />
         ) : tab === Tabs.CREATE ? (
           <components.Create />
-        ) : tab === Tabs.UPDATE ? (
-          <components.Update />
+        ) : tab === Tabs.ADD ? (
+          <components.Add />
         ) : tab === Tabs.DELETE ? (
           <components.Delete />
         ) : null}

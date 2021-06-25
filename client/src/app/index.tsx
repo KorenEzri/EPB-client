@@ -36,6 +36,7 @@ export function App() {
         <Switch>
           <Route exact path="/" component={Pages.HomePage} />
           <Route exact path="/control" component={Pages.ControlPage} />
+          <Route exact path="/add/:id" component={Pages.AddRouter} />
           <Route component={NotFoundPage} />
         </Switch>
         <GlobalStyle />
