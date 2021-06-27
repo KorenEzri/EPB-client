@@ -3,12 +3,13 @@ import styled from 'styled-components/macro';
 
 interface Props {
   LeftContent;
+  leftTitle:string;
 }
 export function LeftSplit(props: Props) {
   return (
     <Wrapper>
       <Title>
-        <span>Add user auth</span>
+        <span>{props.leftTitle}</span>
       </Title>
       <Content>
         <props.LeftContent />

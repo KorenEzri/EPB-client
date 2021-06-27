@@ -1,14 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { AddPageSplits } from '../../AddPageSplits/Loadable';
-import { UserAuthForm } from './UserAuthForm/Loadable';
+import {AddCrudForm} from "./components/AddCrudForm/Loadable"
 
 interface Props {}
 
-export function AddUserAuth(props: Props) {
+export function AddCrud(props: Props) {
   return (
     <Div>
-      <AddPageSplits leftTitle="Add User Auth" LeftContent={UserAuthForm} rightContent={'Right'} />
+      <AddPageSplits leftTitle="Add CRUD operations" LeftContent={AddCrudForm}  rightContent={'Right'} />
     </Div>
   );
 }

@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
-import * as selects from './components';
-import { getterSetterMutation, mutations } from 'app/network';
-import { Spinner, SubmitLoader } from 'app/components';
-import * as utils from './util';
 import { useApolloClient } from '@apollo/client';
+import styled from 'styled-components';
+import { Spinner, SubmitLoader } from 'app/components';
+import { getterSetterMutation, mutations } from 'app/network';
+import * as selects from './components';
 import * as formStyles from 'app/components/formStyles';
 
 interface Props {}
@@ -18,7 +17,7 @@ export function UserAuthForm(props: Props) {
     'username:string',
     'password:string',
   ]);
-  const [authProperties, setAuthProperties] = React.useState(['']);
+  const [authProperties, ] = React.useState(['']);
   const [userInputs, setUserInputs] = React.useState(['']);
   const [userProperties, setUserProperties] = React.useState(['']);
   const setUpData = data => {
@@ -35,9 +34,7 @@ export function UserAuthForm(props: Props) {
     return data;
   };
   const {
-    register,
     handleSubmit,
-    formState: { errors },
   } = useForm();
 
   const onSubmit = async data => {
@@ -45,13 +42,12 @@ export function UserAuthForm(props: Props) {
     console.log('DATA: ', data);
     try {
       setSpinnerShow(true);
-      const res = await getterSetterMutation(
+       await getterSetterMutation(
         client,
         mutations.mAddUserAuth,
         data,
       );
       setSpinnerShow(false);
-      // setError(res);
     } catch ({ message }) {
       setSpinnerShow(false);
       setError(message);

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { AddActionList } from './AddActionList/Loadable';
-const actionsMock = [
+const actions = [
   {
     name: 'User auth',
     description:
@@ -13,37 +13,42 @@ const actionsMock = [
       'cookie-parser',
       '@types for all packages - if building in Typescript.',
     ],
+    link: 'add/userauth'
   },
   {
     name: 'Image upload',
     description:
       'asdaasddadsadasdsadasdasdsadasdasdsasaasdsadasdasdadadadasdadadasds',
     dependencies: ['ads', 'asdaadsa', 'sadadasdsad', 'asddadsa'],
+    link: 'add/crud'
   },
   {
     name: 'CRUD operations',
     description:
-      'asdaasddadsadasdsadasdasdsadasdasdsasaasdsadasdasdadadadasdadadasds',
-    dependencies: ['ads', 'asdaadsa', 'sadadasdsad', 'asddadsa'],
+      'Arm your backend with Create, Read, Update and Delete operations with the click of a button!',
+    dependencies: ['No extra dependencies!'],
+    link: 'add/crud'
   },
   {
     name: 'Message system',
     description:
       'asdaasddadsadasdsadasdasdsadasdasdsasaasdsadasdasdadadadasdadadasds',
     dependencies: ['ads', 'asdaadsa', 'sadadasdsad', 'asddadsa'],
+    link: 'add/crud'
   },
   {
     name: 'Emailing system',
     description:
       'asdaasddadsadasdsadasdasdsadasdasdsasaasdsadasdasdadadadasdadadasds',
     dependencies: ['ads', 'asdaadsa', 'sadadasdsad', 'asddadsa'],
+    link: 'add/crud'
   },
 ];
 interface Props {}
 export function Add(props: Props) {
   return (
     <Div>
-      <AddActionList actions={actionsMock} />
+      <AddActionList actions={actions} />
     </Div>
   );
 }

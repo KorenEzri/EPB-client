@@ -5,7 +5,7 @@ import * as AddPages from './AddPages';
 
 export function AddRouter(props) {
   const { id } = props.match.params;
-  return id === 'userauth' ? <AddPages.AddUserAuth /> : <NotFoundPage />;
+  return id === 'userauth' ? <AddPages.AddUserAuth /> : id === 'crud' ? <AddPages.AddCrud /> : <NotFoundPage />;
 }
 
 const Div = styled.div``;

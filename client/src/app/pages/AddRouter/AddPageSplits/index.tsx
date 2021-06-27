@@ -10,6 +10,7 @@ import { RightSplit } from './RightSplit/Loadable';
 
 interface Props {
   LeftContent;
+  leftTitle:string;
   rightContent;
 }
 
@@ -17,7 +18,7 @@ export function AddPageSplits(props: Props) {
   return (
     <Container>
       <LeftWrapper>
-        <LeftSplit LeftContent={props.LeftContent} />
+        <LeftSplit leftTitle={props.leftTitle} LeftContent={props.LeftContent} />
       </LeftWrapper>
       <RightWrapper>
         <RightSplit rightContent={props.rightContent} />

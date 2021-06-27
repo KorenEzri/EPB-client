@@ -3,7 +3,7 @@ import * as styles from './Styles';
 import { useHistory } from 'react-router-dom';
 
 interface Props {
-  action: { name: string; description: string; dependencies: string[] };
+  action: { name: string; description: string; dependencies: string[]; link:string; };
 }
 export function AddAction(props: Props) {
   const history = useHistory();
@@ -34,7 +34,7 @@ export function AddAction(props: Props) {
         </styles.Dependencies>
         <styles.GetItButton
           onClick={() => {
-            history.push('/add/userauth');
+            history.push(`/${action.link}`);
           }}
         >
           Get it now
