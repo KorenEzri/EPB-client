@@ -24,7 +24,7 @@ export function UserPropsSelect(props: Props) {
           return (
             <>
               <styles.Option
-                value={inputName}
+                value={`${inputName}:${inputType}`}
                 key={`${index}${inputName}`}
                 title={inputType}
               >

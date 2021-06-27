@@ -159,7 +159,6 @@ const SubTab = styled.p`
   margin: 6px;
 `;
 const Code = styled.div`
-  height: 100vh;
   position: relative;
 `;
 const Pre = styled.pre`
@@ -168,4 +167,5 @@ const Pre = styled.pre`
   ::-webkit-scrollbar {
     display: none;
   }
+  height: 200vh;
 `;

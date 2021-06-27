@@ -93,6 +93,23 @@ export const mutations = {
       )
     }
   `,
+  mAddUserAuth: gql`
+    mutation addUserAuth(
+      $publicUserInputs: [String]
+      $authUserInputs: [String]
+      $publicUserProperties: [String]
+      $authUserProperties: [String]
+    ) {
+      addUserAuth(
+        options: {
+          publicUserInputs: $publicUserInputs
+          authUserInputs: $authUserInputs
+          publicUserProperties: $publicUserProperties
+          authUserProperties: $authUserProperties
+        }
+      )
+    }
+  `,
 };
 
 export const getterSetterQuery = async (

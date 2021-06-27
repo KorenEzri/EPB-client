@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import * as selects from './components';
-import { getterSetterQuery, queries } from 'app/network';
 import { getterSetterMutation, mutations } from 'app/network';
 import { Spinner, SubmitLoader } from 'app/components';
 import * as utils from './util';
@@ -15,17 +14,49 @@ export function UserAuthForm(props: Props) {
   const client = useApolloClient();
   const [spinnerShow, setSpinnerShow] = React.useState(false);
   const [error, setError] = React.useState('');
-  const [authInputs, setAuthInputs] = React.useState(['']);
+  const [authInputs, setAuthInputs] = React.useState([
+    'username:string',
+    'password:string',
+  ]);
+  const [authProperties, setAuthProperties] = React.useState(['']);
   const [userInputs, setUserInputs] = React.useState(['']);
   const [userProperties, setUserProperties] = React.useState(['']);
-  const [authProperties, setAuthProperties] = React.useState(['']);
-
+  const setUpData = data => {
+    if (!authInputs.includes('username:string')) {
+      authInputs.push('username:string');
+    }
+    if (!authInputs.includes('password:string')) {
+      authInputs.push('password:string');
+    }
+    data.authUserInputs = authInputs.filter(val => val !== '');
+    data.authUserProperties = authProperties.filter(val => val !== '');
+    data.publicUserInputs = userInputs.filter(val => val !== '');
+    data.publicUserProperties = userProperties.filter(val => val !== '');
+    return data;
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = async data => {};
+
+  const onSubmit = async data => {
+    data = setUpData(data);
+    console.log('DATA: ', data);
+    try {
+      setSpinnerShow(true);
+      const res = await getterSetterMutation(
+        client,
+        mutations.mAddUserAuth,
+        data,
+      );
+      setSpinnerShow(false);
+      // setError(res);
+    } catch ({ message }) {
+      setSpinnerShow(false);
+      setError(message);
+    }
+  };
 
   return (
     <formStyles.Wrapper>
@@ -57,16 +88,21 @@ export function UserAuthForm(props: Props) {
               inputs={{ userProperties, setUserProperties }}
             />
           </formStyles.Input>
-          {/* <Spinner> */}
-          <UserAuthFormBtnContainer>
-            <formStyles.CreateButton
-              type="button"
-              onClick={handleSubmit(onSubmit)}
-            >
-              Create
-            </formStyles.CreateButton>
-          </UserAuthFormBtnContainer>
-          {/* </Spinner> */}
+          <Spinner
+            error={error}
+            setError={setError}
+            show={spinnerShow}
+            VisualComponent={SubmitLoader}
+          >
+            <UserAuthFormBtnContainer>
+              <formStyles.CreateButton
+                type="button"
+                onClick={handleSubmit(onSubmit)}
+              >
+                Create
+              </formStyles.CreateButton>
+            </UserAuthFormBtnContainer>
+          </Spinner>
         </formStyles.InputContainer>
       </formStyles.HtmlForm>
     </formStyles.Wrapper>

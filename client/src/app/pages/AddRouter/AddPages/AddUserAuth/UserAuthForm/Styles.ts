@@ -4,7 +4,7 @@ export const SelectBox = styled.select`
   outline: none;
   border: none;
   width: 100% !important;
-  height: 250px;
+  height: 230px;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -14,20 +14,20 @@ export const SelectBox = styled.select`
 `;
 export const Option = styled.option`
   padding: 6px;
-  margin: 2px;
-  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
   user-select: none;
   border: 1px solid lightblue;
   cursor: pointer;
   text-overflow: ellipsis;
-  transition: 500ms;
+  transition: 250ms;
   &:hover {
     transition: 1ms;
     border: 1px solid whitesmoke;
   }
   &:focus {
     background-color: whitesmoke;
-    transition: 500ms;
+    transition: 250ms;
     color: black;
   }
   &:active {
@@ -38,6 +38,7 @@ export const Option = styled.option`
     background: whitesmoke;
     color: black;
   }
+  width: 100%;
 `;
 export const ClearSelectBtn = styled.button`
   margin-top: 10px;

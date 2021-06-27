@@ -24,7 +24,7 @@ export function AuthInputSelect(props: Props) {
           return (
             <>
               <styles.Option
-                value={inputName}
+                value={`${inputName}:${inputType}`}
                 key={`${index}${inputName}`}
                 title={inputType}
               >
@@ -38,7 +38,7 @@ export function AuthInputSelect(props: Props) {
         <styles.ClearSelectBtn
           type="button"
           onClick={() => {
-            setAuthInputs([]);
+            setAuthInputs(['username:string', 'password:string']);
           }}
         >
           Clear all
