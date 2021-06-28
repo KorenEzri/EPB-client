@@ -1,57 +1,55 @@
-/**
-*
-* AddCrudOptions
-*
-*/
 import * as React from 'react';
 import styled from 'styled-components/macro';
+import { FromExisting } from '../../Pages';
 
-interface Props {
-  setOpts
-  Opts
+interface Props {}
+interface Expand {
+  expand: boolean;
 }
 interface Color {
   color?: string;
+  expand: boolean;
   bkg: string;
 }
 
 export function AddCrudOptions(props: Props) {
-
+  const [fromExisting, setFromExisting] = React.useState(false);
   return (
-  <Div>
-    <OptionsContainer>
+    <Div>
+      <OptionsContainer>
         <Option
           bkg="#69bafcd5"
           color="whitesmoke"
+          expand={fromExisting}
           onClick={() => {
-            props.setOpts(props.Opts.EXISTING);
+            setFromExisting(!fromExisting);
           }}
         >
           <p>For an existing database schema</p>
         </Option>
+        <ExpandWrapper expand={fromExisting}>
+          <FromExisting expanded={fromExisting} />
+        </ExpandWrapper>
         <Option
           bkg="#63a4dab7"
           color="white"
-          onClick={() => {
-            props.setOpts(props.Opts.CREATE);
-          }}
+          expand={fromExisting}
+          onClick={() => {}}
         >
           <p>Create a database schema</p>
         </Option>
         <Option
           bkg="#263E52"
           color="white"
-          onClick={() => {
-            props.setOpts(props.Opts.NODB);
-          }}
+          expand={fromExisting}
+          onClick={() => {}}
         >
           <p>No DB</p>
         </Option>
-      </OptionsContainer> 
-  </Div>
+      </OptionsContainer>
+    </Div>
   );
-
-};
+}
 
 const Div = styled.div``;
 const Option = styled.div<Color>`
@@ -84,4 +82,9 @@ const OptionsContainer = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
+`;
+const ExpandWrapper = styled.div<Expand>`
+  transition: 500ms;
+  margin-top: ${({ expand }) => (expand ? '0px;' : '25px;')};
+  height: ${({ expand }) => (expand ? '0px;' : 'max-content;')};
 `;

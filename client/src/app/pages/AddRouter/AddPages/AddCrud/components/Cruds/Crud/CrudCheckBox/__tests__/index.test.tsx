@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 
-import { FromExisting } from '..';
+import { CruDcheckbox } from '..';
 
 
-describe('<FromExisting  />', () => {
+describe('<CruDcheckbox  />', () => {
   it('should match snapshot', () => {
-    const loadingIndicator = render(<FromExisting />);
+    const loadingIndicator = render(<CruDcheckbox />);
     expect(loadingIndicator.container.firstChild).toMatchSnapshot();
   });
 });
