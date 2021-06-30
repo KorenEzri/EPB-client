@@ -49,8 +49,6 @@ export function ItemInput({ items, setItems }) {
 
   return (
     <Div>
-      {/* {t('')} */}
-      {/*  {t(...messages.someThing())}  */}
       <ul>
         {items.items.map((tag, i) => {
           if (tag === '') return null;

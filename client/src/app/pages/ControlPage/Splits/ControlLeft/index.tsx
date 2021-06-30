@@ -91,6 +91,7 @@ const Wrapper = styled.div`
 const HeaderContainer = styled.nav`
   display: flex;
   margin-bottom: 5px;
+
 `;
 const HeaderButton = styled.button<ActiveTab>`
   letter-spacing: 1px;
@@ -101,15 +102,13 @@ const HeaderButton = styled.button<ActiveTab>`
       : '  linear-gradient(to bottom, #2ea4cf 5%, #027eac 100%);'};
   background-color: ${({ isActive }) => (isActive ? '#16495c' : ' #1f6680')};
   border: 1px solid #024979;
-  border-bottom: ${({ isActive }) =>
-    isActive ? '1.2px solid limegreen;' : '0px;'};
   display: inline-block;
   cursor: pointer;
   color: #ffffff;
   font-family: Arial;
   font-size: 14px;
-  font-weight: bold;
-  height: 50px;
+  border-radius: 4px;
+  height: 70px;
   width: 100%;
   text-decoration: none;
   text-shadow: 0px -1px 0px #2c2e3a;
@@ -130,4 +129,30 @@ const HeaderButton = styled.button<ActiveTab>`
     position: relative;
     top: 1px;
   }
+	box-shadow:inset 0px 0px 15px 3px #23395e;
+	background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
+	background-color:#2e466e;
+	border-radius:4px;
+	border:1px solid #1f2f47;
+  border-bottom: ${({ isActive }) =>
+    isActive ? '1.2px solid limegreen;' : '0px;'};
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	padding:6px 13px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #263666;
+&:hover {
+	background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
+	background-color:#415989;
+}
+&:active {
+	position:relative;
+	top:1px;
+}
+
+        
+     
 `;

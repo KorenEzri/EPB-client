@@ -1,10 +1,10 @@
+import { getterSetterQuery, queries } from 'app/network';
 import * as React from 'react';
 import styled from 'styled-components/macro';
-// import { useTranslation } from 'react-i18next';
 import { ActionForm } from './ActionForm/Loadable';
 import { CustomTypeForm } from './CustomTypeForm/Loadable';
 import { SchemaForm } from './SchemaForm/Loadable';
-// import { messages } from './messages';
+import { useApolloClient } from '@apollo/client';
 
 interface Props {}
 interface ActiveTab {
@@ -16,14 +16,26 @@ enum Tabs {
   SCHEMA,
 }
 export function Create(props: Props) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const { t, i18n } = useTranslation();
+  const client = useApolloClient();
   const [tab, setTab] = React.useState(Tabs.ACTION);
-
+  const [allowedTypes, setAllowedTypes] = React.useState<string[]>([])
+  const fetchAllowedTypes = async () => {
+    try {
+      await getterSetterQuery(client, queries.qAllowedTypes, setAllowedTypes);
+      allowedTypes.forEach((type:string)=> {
+        type = type.trim()
+      })
+    } catch ({ message }) {
+      console.log(message);
+    }
+  }
+  React.useEffect(() => {
+    (async () => {
+     await fetchAllowedTypes()
+    })();
+  });
   return (
     <Wrapper>
-      {/* {t('')} */}
-      {/*  {t(...messages.someThing())}  */}
       <HeaderContainer>
         <HeaderButton
           isActive={tab === Tabs.ACTION}
@@ -51,11 +63,11 @@ export function Create(props: Props) {
         </HeaderButton>
       </HeaderContainer>
       {tab === Tabs.ACTION ? (
-        <ActionForm />
+          <ActionForm allowedTypes={Array.from(new Set(allowedTypes))} fetchAllowedTypes={fetchAllowedTypes}/>
       ) : tab === Tabs.CUSTOMTYPE ? (
-        <CustomTypeForm />
+        <CustomTypeForm allowedTypes={Array.from(new Set(allowedTypes))} fetchAllowedTypes={fetchAllowedTypes} />
       ) : tab === Tabs.SCHEMA ? (
-        <SchemaForm />
+        <SchemaForm allowedTypes={Array.from(new Set(allowedTypes))} fetchAllowedTypes={fetchAllowedTypes} />
       ) : null}
     </Wrapper>
   );
@@ -68,35 +80,29 @@ const HeaderContainer = styled.nav`
 `;
 const HeaderButton = styled.button<ActiveTab>`
   letter-spacing: 1px;
-  box-shadow: 0px 1px 0px 0px #276873;
-  background: ${({ isActive }) =>
-    isActive
-      ? ' linear-gradient(to bottom, #44778a 5%, #295d66 100%);'
-      : '  linear-gradient(to bottom, #599bb3 5%, #408c99 100%);'};
-  background-color: ${({ isActive }) => (isActive ? '599bb3;' : ' 599bb3;')};
-  border: 1px solid #024979;
+  box-shadow: inset 0px 1px 0px 0px #7a8eb9;
+  background: linear-gradient(to bottom, #637aad 5%, #5972a7 100%);
+  background-color: #637aad;
+  border: 1px solid #314179;
   display: inline-block;
   cursor: pointer;
-  color: whitesmoke;
+  color: #ffffff;
   font-family: Arial;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
-  height: 30px;
-  width: 100%;
+  padding: 6px 12px;
   text-decoration: none;
-  text-shadow: 0px 1px 0px #3d768a;
-  outline: none !important;
-  @media (max-width: 640px) {
-    font-size: 10px;
-    height: 40px;
-    min-width: 60px;
-  }
   &:hover {
-    background: linear-gradient(to bottom, #035b7a 5%, #217ea0 100%);
-    background-color: '#02698f;';
+    background: linear-gradient(to bottom, #5972a7 5%, #637aad 100%);
+    background-color: #5972a7;
   }
   &:active {
     position: relative;
     top: 1px;
   }
+  border-bottom: ${({ isActive }) =>
+    isActive ? '1.2px solid limegreen;' : '0px;'};
+  height: 50px;
+  width: 100%;
+  border-radius: 4px;
 `;

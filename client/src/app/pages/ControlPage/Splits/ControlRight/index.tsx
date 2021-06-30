@@ -39,7 +39,7 @@ export function ControlRight(props: Props) {
         setResolvers(message);
       }
     })();
-  });
+  }, [client]);
 
   return (
     <Wrapper

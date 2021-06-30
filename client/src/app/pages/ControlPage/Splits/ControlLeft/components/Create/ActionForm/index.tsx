@@ -15,10 +15,20 @@ import {
 import { Spinner, SubmitLoader } from 'app/components';
 import { useApolloClient } from '@apollo/client';
 import { Wrapper, Title, HtmlForm, MultiInputContainer } from './Styles';
-interface Props {}
+import { InputSuggestionList } from 'app/components/InputSuggestionList/Loadable';
+
+interface Props {
+  allowedTypes: string[];
+  fetchAllowedTypes
+}
 export function ActionForm(props: Props) {
+  const { allowedTypes, fetchAllowedTypes } = props;
   const client = useApolloClient();
   const [resolverNames, setResolverNames] = React.useState<string[]>([]);
+  const [textValue, setTextValue] = React.useState<string | undefined>()
+  const [searchResult, setSearchResults] = React.useState<string[] | undefined>(
+    [],
+  );
   const [spinnerShow, setSpinnerShow] = React.useState(false);
   const [error, setError] = React.useState('');
   const [vars, setVars] = React.useState({ items: [] });
@@ -27,13 +37,27 @@ export function ActionForm(props: Props) {
   const {
     register,
     handleSubmit,
-    formState: { isValid, errors },
+    formState: { errors },
   } = useForm();
   React.useEffect(() => {
     (async () => {
       await getterSetterQuery(client, queries.qResolverNames, setResolverNames);
     })();
   });
+  const handleResultSuggestions = async e => {
+    const input = e.target.value;
+    setTextValue(input)
+    const searchSuggestions = allowedTypes.filter(val => {
+      if (val === input) return val;
+      else return val.includes(input);
+    });
+    searchSuggestions.length = 6
+    if (!input) {
+      setSearchResults(undefined);
+      return;
+    }
+    setSearchResults(searchSuggestions);
+  };
   const checkTypes = (types: string[]) => {
     return types
       .map((type: string) => {
@@ -57,11 +81,15 @@ export function ActionForm(props: Props) {
     try {
       setSpinnerShow(true);
       data.properties = vars.items;
+      data.returnType = textValue
       const res = await getterSetterMutation(
         client,
         mutations.mCreateResolver,
         data,
       );
+      let timeout:any = 700
+      await getterSetterMutation(client, mutations.mRestartServer,timeout  )
+      await fetchAllowedTypes()
       setSpinnerShow(false);
       if (res !== 'OK') {
         setError(res);
@@ -81,6 +109,7 @@ export function ActionForm(props: Props) {
         onSubmit={e => {
           e.preventDefault();
         }}
+        autoComplete="off"
       >
         <InputContainer>
           <Input>
@@ -125,9 +154,14 @@ export function ActionForm(props: Props) {
               {...register('returnType', {
                 required: true,
               })}
+              onChange={e => {
+                handleResultSuggestions(e);
+              }}
               type="text"
+              value={textValue}
               placeholder="String, [String], CustomType, etc.."
             />
+            <InputSuggestionList setter={setTextValue} value={textValue} searchResults={searchResult} />
             {errors.returnType && (
               <ErrorSpan>Return type is necessary.</ErrorSpan>
             )}
@@ -145,7 +179,7 @@ export function ActionForm(props: Props) {
               placeholder="IE 'create a new resolver and typeDef in fs.'"
             />
             {errors.description && (
-              <ErrorSpan>Return type is necessary.</ErrorSpan>
+              <ErrorSpan>Description is necessary.</ErrorSpan>
             )}
           </Input>
           <Input>

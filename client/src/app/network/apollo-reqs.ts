@@ -26,6 +26,11 @@ export const queries = {
       getAllResolverNames
     }
   `,
+  qAllowedTypes: gql`
+    query getAllowedTypes {
+      getAllowedTypes
+    }
+  `,
 };
 export const mutations = {
   mCreateResolver: gql`
@@ -108,6 +113,11 @@ export const mutations = {
           authUserProperties: $authUserProperties
         }
       )
+    }
+  `,
+  mRestartServer: gql`
+    mutation restartServer($timeout: Int) {
+      restartServer(timeout: $timeout)
     }
   `,
 };

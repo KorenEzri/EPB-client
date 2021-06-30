@@ -8,7 +8,10 @@ import { getterSetterMutation, mutations } from 'app/network';
 import { setUpTypeData } from '../util';
 import { CustomTypeInputs } from './CustomTypeInputs/Loadable';
 
-interface Props {}
+interface Props {
+  allowedTypes:string[]
+  fetchAllowedTypes
+}
 export function CustomTypeForm(props: Props) {
   const client = useApolloClient();
   const [resolverNames, setResolverNames] = React.useState<string[]>([]);
@@ -23,6 +26,7 @@ export function CustomTypeForm(props: Props) {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  
 
   const validateName = (v: string) =>
     resolverNames.includes(v) ? false : true;

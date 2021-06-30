@@ -6,7 +6,12 @@ import { getterSetterMutation, mutations } from 'app/network';
 import { useApolloClient } from '@apollo/client';
 import { setUpSchemaData } from '../util';
 import { SchemaInputs } from './SchemaInputs/Loadable';
-export function SchemaForm() {
+
+interface Props {
+  allowedTypes:string[]
+  fetchAllowedTypes
+}
+export function SchemaForm(props:Props) {
   const client = useApolloClient();
   const [uniqueIdentifiers, setUniqueIdentifiers] = React.useState(['']);
   const [error, setError] = React.useState('');
