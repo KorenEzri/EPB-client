@@ -4,7 +4,6 @@ export const SelectBox = styled.select`
   outline: none;
   border: none;
   width: 100% !important;
-  height: 230px;
   &::-webkit-scrollbar {
     display: none;
   }

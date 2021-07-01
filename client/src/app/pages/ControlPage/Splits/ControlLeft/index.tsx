@@ -1,10 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { useTranslation } from 'react-i18next';
 import * as components from './components';
 import { useApolloClient } from '@apollo/client';
 import { getterSetterQuery, queries } from '../../../../network';
-// import { messages } from './messages';
 interface Props {}
 interface ActiveTab {
   isActive: boolean;
@@ -17,8 +15,6 @@ enum Tabs {
 }
 export function ControlLeft(props: Props) {
   const client = useApolloClient();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t, i18n } = useTranslation();
   const [actions, setActions] = React.useState([]);
   const [tab, setTab] = React.useState(Tabs.ACTIONS);
 
@@ -33,8 +29,6 @@ export function ControlLeft(props: Props) {
   });
   return (
     <Wrapper>
-      {t('')}
-      {/*  {t(...messages.someThing())}  */}
       <HeaderContainer>
         <HeaderButton
           isActive={tab === Tabs.ACTIONS}

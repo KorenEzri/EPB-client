@@ -25,7 +25,7 @@ export function Crud(props: Props) {
   return (
     <styles.Wrapper hide={hide}>
       <styles.ActionDiv hide={false}>
-        Select a schema (or multiple schemas)
+        Select a schema
       </styles.ActionDiv>
       <formStyles.Input>
         <formStyles.InputContainer>

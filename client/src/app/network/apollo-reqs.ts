@@ -31,6 +31,11 @@ export const queries = {
       getAllowedTypes
     }
   `,
+  qDBSchemaNames: gql`
+    query getAllDBSchemaNames {
+      getAllDBSchemaNames
+    }
+  `,
 };
 export const mutations = {
   mCreateResolver: gql`
