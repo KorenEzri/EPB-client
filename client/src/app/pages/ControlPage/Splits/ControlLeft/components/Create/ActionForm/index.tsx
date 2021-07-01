@@ -16,16 +16,16 @@ import { Spinner, SubmitLoader } from 'app/components';
 import { useApolloClient } from '@apollo/client';
 import { Wrapper, Title, HtmlForm, MultiInputContainer } from './Styles';
 import { InputSuggestionList } from 'app/components/InputSuggestionList/Loadable';
+import { addToAllowedTypes } from '../util';
 
 interface Props {
   allowedTypes: string[];
-  fetchAllowedTypes
 }
 export function ActionForm(props: Props) {
-  const { allowedTypes, fetchAllowedTypes } = props;
+  const { allowedTypes } = props;
   const client = useApolloClient();
   const [resolverNames, setResolverNames] = React.useState<string[]>([]);
-  const [textValue, setTextValue] = React.useState<string | undefined>()
+  const [textValue, setTextValue] = React.useState<string | undefined>();
   const [searchResult, setSearchResults] = React.useState<string[] | undefined>(
     [],
   );
@@ -46,12 +46,12 @@ export function ActionForm(props: Props) {
   });
   const handleResultSuggestions = async e => {
     const input = e.target.value;
-    setTextValue(input)
+    setTextValue(input);
     const searchSuggestions = allowedTypes.filter(val => {
       if (val === input) return val;
       else return val.includes(input);
     });
-    searchSuggestions.length = 6
+    searchSuggestions.length = 6;
     if (!input) {
       setSearchResults(undefined);
       return;
@@ -81,15 +81,19 @@ export function ActionForm(props: Props) {
     try {
       setSpinnerShow(true);
       data.properties = vars.items;
-      data.returnType = textValue
+      data.returnType = textValue;
       const res = await getterSetterMutation(
         client,
         mutations.mCreateResolver,
         data,
       );
-      let timeout:any = 700
-      await getterSetterMutation(client, mutations.mRestartServer,timeout  )
-      await fetchAllowedTypes()
+      let timeout: any = 700;
+      await getterSetterMutation(client, mutations.mRestartServer, timeout);
+      addToAllowedTypes(
+        allowedTypes,
+        data.name,
+        data.type === 'Query' ? 'type' : 'input',
+      );
       setSpinnerShow(false);
       if (res !== 'OK') {
         setError(res);
@@ -161,7 +165,11 @@ export function ActionForm(props: Props) {
               value={textValue}
               placeholder="String, [String], CustomType, etc.."
             />
-            <InputSuggestionList setter={setTextValue} value={textValue} searchResults={searchResult} />
+            <InputSuggestionList
+              setter={setTextValue}
+              value={textValue}
+              searchResults={searchResult}
+            />
             {errors.returnType && (
               <ErrorSpan>Return type is necessary.</ErrorSpan>
             )}

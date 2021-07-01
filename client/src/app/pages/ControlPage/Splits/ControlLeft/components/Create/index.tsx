@@ -18,20 +18,22 @@ enum Tabs {
 export function Create(props: Props) {
   const client = useApolloClient();
   const [tab, setTab] = React.useState(Tabs.ACTION);
-  const [allowedTypes, setAllowedTypes] = React.useState<string[]>([])
+  const [allowedTypes, setAllowedTypes] = React.useState<string[]>([]);
   const fetchAllowedTypes = async () => {
     try {
+      console.log('BEFORE: ', allowedTypes);
       await getterSetterQuery(client, queries.qAllowedTypes, setAllowedTypes);
-      allowedTypes.forEach((type:string)=> {
-        type = type.trim()
-      })
+      console.log(allowedTypes);
+      allowedTypes.forEach((type: string) => {
+        type = type.trim();
+      });
     } catch ({ message }) {
       console.log(message);
     }
-  }
+  };
   React.useEffect(() => {
     (async () => {
-     await fetchAllowedTypes()
+      await fetchAllowedTypes();
     })();
   });
   return (
@@ -63,11 +65,11 @@ export function Create(props: Props) {
         </HeaderButton>
       </HeaderContainer>
       {tab === Tabs.ACTION ? (
-          <ActionForm allowedTypes={Array.from(new Set(allowedTypes))} fetchAllowedTypes={fetchAllowedTypes}/>
+        <ActionForm allowedTypes={Array.from(new Set(allowedTypes))} />
       ) : tab === Tabs.CUSTOMTYPE ? (
-        <CustomTypeForm allowedTypes={Array.from(new Set(allowedTypes))} fetchAllowedTypes={fetchAllowedTypes} />
+        <CustomTypeForm allowedTypes={Array.from(new Set(allowedTypes))} />
       ) : tab === Tabs.SCHEMA ? (
-        <SchemaForm allowedTypes={Array.from(new Set(allowedTypes))} fetchAllowedTypes={fetchAllowedTypes} />
+        <SchemaForm allowedTypes={Array.from(new Set(allowedTypes))} />
       ) : null}
     </Wrapper>
   );

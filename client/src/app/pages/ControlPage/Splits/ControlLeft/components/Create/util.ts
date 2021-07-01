@@ -56,3 +56,18 @@ export const setUpSchemaData = (data, properties, uniqueIdentifiers) => {
   data.dbSchema = true;
   data.typeDef = false;
 };
+export const addToAllowedTypes = (
+  array: string[],
+  name: string,
+  gqlType: string,
+) => {
+  array.push(name);
+  array.push(`${name}[]`);
+  array.push(`[${name}]`);
+  array.push(`${name}Options`);
+  array.push(`${name}Options[]`);
+  array.push(`[${name}Options]`);
+  array.push(`${name}Options${gqlType}[]`);
+  array.push(`[${name}Options${gqlType}]`);
+  array.push(`[${name}Options${gqlType}]`);
+};

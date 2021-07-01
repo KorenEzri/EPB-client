@@ -4,14 +4,13 @@ import { useForm } from 'react-hook-form';
 import { Spinner, SubmitLoader } from 'app/components';
 import { getterSetterMutation, mutations } from 'app/network';
 import { useApolloClient } from '@apollo/client';
-import { setUpSchemaData } from '../util';
+import { addToAllowedTypes, setUpSchemaData } from '../util';
 import { SchemaInputs } from './SchemaInputs/Loadable';
 
 interface Props {
-  allowedTypes:string[]
-  fetchAllowedTypes
+  allowedTypes: string[];
 }
-export function SchemaForm(props:Props) {
+export function SchemaForm(props: Props) {
   const client = useApolloClient();
   const [uniqueIdentifiers, setUniqueIdentifiers] = React.useState(['']);
   const [error, setError] = React.useState('');
@@ -34,6 +33,9 @@ export function SchemaForm(props:Props) {
         data,
       );
       if (schemaRes !== 'OK') setError(schemaRes);
+      let timeout: any = 700;
+      await getterSetterMutation(client, mutations.mRestartServer, timeout);
+      addToAllowedTypes(props.allowedTypes, data.name, '');
       setSpinnerShow(false);
     } catch ({ message }) {
       setSpinnerShow(false);

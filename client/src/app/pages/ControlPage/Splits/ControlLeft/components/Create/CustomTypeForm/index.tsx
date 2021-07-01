@@ -5,12 +5,11 @@ import { Spinner, SubmitLoader } from 'app/components';
 import { useApolloClient } from '@apollo/client';
 import { getterSetterQuery, queries } from 'app/network';
 import { getterSetterMutation, mutations } from 'app/network';
-import { setUpTypeData } from '../util';
+import { addToAllowedTypes, setUpTypeData } from '../util';
 import { CustomTypeInputs } from './CustomTypeInputs/Loadable';
 
 interface Props {
-  allowedTypes:string[]
-  fetchAllowedTypes
+  allowedTypes: string[];
 }
 export function CustomTypeForm(props: Props) {
   const client = useApolloClient();
@@ -26,7 +25,6 @@ export function CustomTypeForm(props: Props) {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  
 
   const validateName = (v: string) =>
     resolverNames.includes(v) ? false : true;
@@ -52,6 +50,9 @@ export function CustomTypeForm(props: Props) {
         data,
       );
       if (schemaRes !== 'OK') setError(schemaRes);
+      let timeout: any = 700;
+      await getterSetterMutation(client, mutations.mRestartServer, timeout);
+      addToAllowedTypes(props.allowedTypes, data.name, data.type);
       setSpinnerShow(false);
     }
     setSpinnerShow(false);
@@ -62,7 +63,6 @@ export function CustomTypeForm(props: Props) {
       return;
     }
     data = setUpTypeData(data, properties, uniqueIdentifiers);
-
     try {
       await sendQueries(data);
     } catch ({ message }) {
