@@ -39,7 +39,6 @@ export function UserAuthForm(props: Props) {
 
   const onSubmit = async data => {
     data = setUpData(data);
-    console.log('DATA: ', data);
     try {
       setSpinnerShow(true);
        await getterSetterMutation(

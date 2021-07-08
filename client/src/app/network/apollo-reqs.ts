@@ -125,6 +125,21 @@ export const mutations = {
       restartServer(timeout: $timeout)
     }
   `,
+  mAddCrudOperations: gql`
+    mutation addCrudOperations(
+      $schemaName: String
+      $crudActions: [String]
+      $identifier: identifier
+    ) {
+      addCrudOperations(
+        options: {
+          schemaName: $schemaName
+          crudActions: $crudActions
+          identifier: $identifier
+        }
+      )
+    }
+  `,
 };
 
 export const getterSetterQuery = async (

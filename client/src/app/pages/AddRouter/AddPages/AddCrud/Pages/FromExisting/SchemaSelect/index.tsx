@@ -1,6 +1,4 @@
-import * as utils from './util';
 import * as React from 'react';
-import { ButtonContainer } from 'app/components/formStyles';
 import * as styles from './Styles';
 import { getterSetterQuery, queries } from 'app/network';
 import { useApolloClient } from '@apollo/client';
@@ -16,6 +14,7 @@ export function SchemaSelect(props: Props) {
     (async () => {
       try {
         await getterSetterQuery(client, queries.qDBSchemaNames, setSchemaNames);
+        setSelect(schemaNames[0])
       } catch ({ message }) {
         console.log(message);
       }
@@ -26,7 +25,11 @@ export function SchemaSelect(props: Props) {
     <styles.Div>
       <styles.SelectBox
         onChange={e => {
-          utils.handleSelectChange(e, setSelect, select);
+          const option = Array.from(e.target.selectedOptions)[0];
+          if (!(option instanceof HTMLOptionElement)) return;
+          const optionValue = option.value;
+          setSelect(optionValue)
+          // utils.handleSelectChange(e, setSelect, select);
         }}
         value={select}
       >

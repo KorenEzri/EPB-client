@@ -9,12 +9,12 @@ module.exports = {
   extends: ['react-app', 'prettier', 'prettier/react'],
   plugins: ['prettier'],
   rules: {
-    'prettier/prettier': ['error', prettierOptions],
+    'prettier/prettier': ['off', prettierOptions],
   },
   overrides: [
     {
       files: ['**/*.ts?(x)'],
-      rules: { 'prettier/prettier': ['warn', prettierOptions] },
+      rules: { 'prettier/prettier': ['off', prettierOptions] },
     },
   ],
 };
