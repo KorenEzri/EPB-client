@@ -3,7 +3,16 @@ import styled from 'styled-components/macro';
 import { AddActionList } from './AddActionList/Loadable';
 const actions = [
   {
+    name: 'CRUD operations',
+    available: true,
+    description:
+      'Arm your backend with Create, Read, Update and Delete operations with the click of a button!',
+    dependencies: ['No extra dependencies!'],
+    link: 'add/crud'
+  },
+  {
     name: 'User auth',
+    available: false,
     description:
       'An easy-to-use, very simple authentication mechanism.\nUses JWT to produce access and refresh tokens, and bcrypt to hash passwords.\nHashed passwords are stored in the DB and usernames are stored as well, while public user data is stored in a different collection.',
     dependencies: [
@@ -17,30 +26,26 @@ const actions = [
   },
   {
     name: 'Image upload',
+    available: false,
     description:
-      'asdaasddadsadasdsadasdasdsadasdasdsasaasdsadasdasdadadadasdadadasds',
-    dependencies: ['ads', 'asdaadsa', 'sadadasdsad', 'asddadsa'],
-    link: 'add/crud'
-  },
-  {
-    name: 'CRUD operations',
-    description:
-      'Arm your backend with Create, Read, Update and Delete operations with the click of a button!',
-    dependencies: ['No extra dependencies!'],
+      'Still in production: N/A',
+    dependencies: [],
     link: 'add/crud'
   },
   {
     name: 'Message system',
+    available: false,
     description:
-      'asdaasddadsadasdsadasdasdsadasdasdsasaasdsadasdasdadadadasdadadasds',
-    dependencies: ['ads', 'asdaadsa', 'sadadasdsad', 'asddadsa'],
+      'Still in production: N/A',
+    dependencies: [],
     link: 'add/crud'
   },
   {
     name: 'Emailing system',
+    available: false,
     description:
-      'asdaasddadsadasdsadasdasdsadasdasdsasaasdsadasdasdadadadasdadadasds',
-    dependencies: ['ads', 'asdaadsa', 'sadadasdsad', 'asddadsa'],
+      'Still in production: N/A',
+    dependencies: [],
     link: 'add/crud'
   },
 ];

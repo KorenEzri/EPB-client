@@ -2,8 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { useApolloClient } from '@apollo/client';
 import { LiveCode } from './StyledCode';
-import { getterSetterQuery, queries } from '../../../../network';
-import Prism from 'prismjs';
+import {Playground} from "../../../ControlPage/Splits/ControlRight/Playground/Loadable"
 
 interface Props {
   rightContent;
@@ -41,7 +40,11 @@ export function RightSplit(props: Props) {
         if (perma instanceof HTMLElement) perma.classList.remove('permalight');
       }}
     >
-      <TabContainer>
+      <PlaygroundContainer>
+      <Playground />
+
+      </PlaygroundContainer>
+      {/* <TabContainer>
         <Tab>
           <span>GraphQL</span>
           <Slider />
@@ -76,11 +79,14 @@ export function RightSplit(props: Props) {
             </code>
           </Code>
         </Pre>
-      </LiveCode>
+      </LiveCode> */}
     </Wrapper>
   );
 }
-
+const PlaygroundContainer = styled.div`
+position: fixed;
+width: 50%;
+`
 const Wrapper = styled.div`
   overflow: hidden;
   .highlight {

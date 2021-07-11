@@ -5,10 +5,6 @@ import { CheckBoxDiv } from '../CheckBoxComp/Styles';
 export function CheckBox({ name, setOptions, options, label }) {
   const [checked, setChecked] = React.useState(false);
   let checkBoxName = name;
-  // const splat = checkBoxName.split('');
-  // splat[0] = splat[0].toLowerCase();
-  // checkBoxName = splat.join('');
-  // console.log(name)
   
   return (
     <div>

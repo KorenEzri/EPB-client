@@ -59,6 +59,8 @@ export function ControlLeft(props: Props) {
           onClick={() => {
             setTab(Tabs.DELETE);
           }}
+          className="grey_out"
+          disabled={true}
         >
           Delete
         </HeaderButton>
@@ -81,11 +83,19 @@ export function ControlLeft(props: Props) {
 const Content = styled.div``;
 const Wrapper = styled.div`
   font-size: 16px;
+  .grey_out {
+    filter: grayscale(50%);
+    color: #999898;
+  }
+    button:disabled,
+    button[disabled] {
+      background-color: #cccccc;
+      color: #999898;
+    }
 `;
 const HeaderContainer = styled.nav`
   display: flex;
   margin-bottom: 5px;
-
 `;
 const HeaderButton = styled.button<ActiveTab>`
   letter-spacing: 1px;
@@ -123,30 +133,27 @@ const HeaderButton = styled.button<ActiveTab>`
     position: relative;
     top: 1px;
   }
-	box-shadow:inset 0px 0px 15px 3px #23395e;
-	background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
-	background-color:#2e466e;
-	border-radius:4px;
-	border:1px solid #1f2f47;
+  box-shadow: inset 0px 0px 15px 3px #23395e;
+  background: linear-gradient(to bottom, #2e466e 5%, #415989 100%);
+  background-color: #2e466e;
+  border-radius: 4px;
+  border: 1px solid #1f2f47;
   border-bottom: ${({ isActive }) =>
     isActive ? '1.2px solid limegreen;' : '0px;'};
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:15px;
-	padding:6px 13px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #263666;
-&:hover {
-	background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
-	background-color:#415989;
-}
-&:active {
-	position:relative;
-	top:1px;
-}
-
-        
-     
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 15px;
+  padding: 6px 13px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #263666;
+  &:hover {
+    background: linear-gradient(to bottom, #415989 5%, #2e466e 100%);
+    background-color: #415989;
+  }
+  &:active {
+    position: relative;
+    top: 1px;
+  }
 `;

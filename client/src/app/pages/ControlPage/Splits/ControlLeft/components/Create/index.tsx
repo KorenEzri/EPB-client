@@ -21,9 +21,7 @@ export function Create(props: Props) {
   const [allowedTypes, setAllowedTypes] = React.useState<string[]>([]);
   const fetchAllowedTypes = async () => {
     try {
-      console.log('BEFORE: ', allowedTypes);
       await getterSetterQuery(client, queries.qAllowedTypes, setAllowedTypes);
-      console.log(allowedTypes);
       allowedTypes.forEach((type: string) => {
         type = type.trim();
       });

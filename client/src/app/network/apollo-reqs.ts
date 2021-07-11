@@ -3,6 +3,7 @@ import {
   gql,
   MutationOptions,
   OperationVariables,
+  QueryOptions,
 } from '@apollo/client';
 
 export const queries = {
@@ -34,6 +35,11 @@ export const queries = {
   qDBSchemaNames: gql`
     query getAllDBSchemaNames {
       getAllDBSchemaNames
+    }
+  `,
+  qgetAllSchemaProps: gql`
+    query getAllSchemaProps($schemaName: String) {
+      getAllSchemaProps(schemaName: $schemaName)
     }
   `,
 };
@@ -147,15 +153,26 @@ export const getterSetterQuery = async (
   query: any,
   setter?: (arg0: any) => void,
   extraFunc?: Function,
+  vars?,
 ) => {
   try {
     const qry = query;
-    const { data } = await client.query({
-      query: qry,
-    });
-    const res = data[query.definitions[0].name.value];
-    if (setter) setter(res);
-    return res;
+    if (vars) {
+      const { data } = await client.query({
+        query: qry,
+        variables: vars,
+      });
+      const res = data[query.definitions[0].name.value];
+      if (setter) setter(res);
+      return res;
+    } else {
+      const { data } = await client.query({
+        query: qry,
+      });
+      const res = data[query.definitions[0].name.value];
+      if (setter) setter(res);
+      return res;
+    }
   } catch ({ message }) {
     console.log(message);
     return message;

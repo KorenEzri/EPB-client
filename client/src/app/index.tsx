@@ -34,8 +34,7 @@ export function App() {
           <meta name="description" content="A React Boilerplate application" />
         </Helmet>
         <Switch>
-          <Route exact path="/" component={Pages.HomePage} />
-          <Route exact path="/control" component={Pages.ControlPage} />
+          <Route exact path="/" component={Pages.ControlPage} />
           <Route exact path="/add/:id" component={Pages.AddRouter} />
           <Route component={NotFoundPage} />
         </Switch>

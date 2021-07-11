@@ -12,7 +12,7 @@ interface Props {
 }
 export function SchemaForm(props: Props) {
   const client = useApolloClient();
-  const [uniqueIdentifiers, setUniqueIdentifiers] = React.useState(['']);
+  const [uniqueIdentifiers, setUniqueIdentifiers] = React.useState<string[]>([]);
   const [error, setError] = React.useState('');
   const [spinnerShow, setSpinnerShow] = React.useState(false);
   const [properties, setProperties] = React.useState({ items: [] });

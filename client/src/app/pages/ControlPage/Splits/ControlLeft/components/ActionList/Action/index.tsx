@@ -35,7 +35,7 @@ export function Action(props: Props) {
           highlighted.classList.add('permalight');
           highlighted.scrollIntoView({
             behavior: 'smooth',
-            block: 'end',
+            block: 'start',
             inline: 'nearest',
           });
         }

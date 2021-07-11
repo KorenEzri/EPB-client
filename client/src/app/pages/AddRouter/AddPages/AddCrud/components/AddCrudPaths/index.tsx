@@ -12,7 +12,7 @@ interface Color {
   bkg: string;
 }
 
-export function AddCrudOptions(props: Props) {
+export function AddCrudPaths(props: Props) {
   const [fromExisting, setFromExisting] = React.useState(false);
   return (
     <Div>
@@ -35,6 +35,7 @@ export function AddCrudOptions(props: Props) {
           color="white"
           expand={fromExisting}
           onClick={() => {}}
+          className="grey_out"
         >
           <p>Create a database schema</p>
         </Option>
@@ -43,6 +44,7 @@ export function AddCrudOptions(props: Props) {
           color="white"
           expand={fromExisting}
           onClick={() => {}}
+          className="grey_out"
         >
           <p>No DB</p>
         </Option>
@@ -82,6 +84,15 @@ const OptionsContainer = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
+  .grey_out {
+    filter: grayscale(80%);
+    &:hover {
+      border: unset;
+    transition: unset;
+    color: unset;
+    text-shadow: unset;
+    }
+  }
 `;
 const ExpandWrapper = styled.div<Expand>`
   transition: 500ms;

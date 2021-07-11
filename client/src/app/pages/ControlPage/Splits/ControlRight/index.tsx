@@ -5,8 +5,6 @@ import { LiveCode } from './StyledCode';
 import { Playground } from './Playground/Loadable';
 import { getterSetterQuery, queries } from '../../../../network';
 import Prism from 'prismjs';
-// import { useTranslation } from 'react-i18next';
-// import { messages } from './messages';
 interface Props {}
 enum Tabs {
   LIVECODE,
@@ -18,8 +16,6 @@ enum SubTabs {
 }
 export function ControlRight(props: Props) {
   const client = useApolloClient();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const { t, i18n } = useTranslation();
   const [tab, setTab] = React.useState<Tabs>(Tabs.LIVECODE);
   const [subTab, setSubTab] = React.useState<SubTabs>(SubTabs.RESOLVERS);
   const [resolvers, setResolvers] = React.useState('');
@@ -34,6 +30,7 @@ export function ControlRight(props: Props) {
   React.useEffect(() => {
     (async () => {
       try {
+        Prism.highlightAll();
         await updateCodeTree();
       } catch ({ message }) {
         setResolvers(message);
@@ -48,11 +45,12 @@ export function ControlRight(props: Props) {
         if (perma instanceof HTMLElement) perma.classList.remove('permalight');
       }}
     >
-      {/* {t('')} */}
-      {/*  {t(...messages.someThing())}  */}
       <TabContainer>
         <Tab
           onClick={() => {
+            setTimeout(() => {
+              Prism.highlightAll();
+             }, 300)
             setTab(Tabs.LIVECODE);
           }}
         >
@@ -62,6 +60,9 @@ export function ControlRight(props: Props) {
             <SubTabContainer>
               <SubTab
                 onClick={() => {
+                  setTimeout(() => {
+                    Prism.highlightAll();
+                   }, 300)
                   setSubTab(SubTabs.RESOLVERS);
                 }}
               >
@@ -72,6 +73,9 @@ export function ControlRight(props: Props) {
               />
               <SubTab
                 onClick={() => {
+                  setTimeout(() => {
+                    Prism.highlightAll();
+                   }, 300)
                   setSubTab(SubTabs.TYPEDEFS);
                 }}
               >
@@ -85,6 +89,9 @@ export function ControlRight(props: Props) {
         </Tab>
         <Tab
           onClick={() => {
+            setTimeout(() => {
+              Prism.highlightAll();
+             }, 300)
             setTab(Tabs.PLAYGROUND);
           }}
         >

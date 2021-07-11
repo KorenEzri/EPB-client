@@ -11,6 +11,7 @@ export const GlobalStyle = createGlobalStyle`
     background-color: #3D5866;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: whitesmoke;
+
   }
   #root {
     min-height: 100%;

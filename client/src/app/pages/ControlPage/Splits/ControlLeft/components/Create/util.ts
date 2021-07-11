@@ -1,8 +1,8 @@
 export const checkTypes = (types: string[]) => {
   return types
     .map((type: string) => {
-      if (type.split('|').length > 1) {
-        if (!(type.split(':').length > 1)) return `returnType: ${type}`;
+      if (type?.split('|').length > 1) {
+        if (!(type?.split(':').length > 1)) return `returnType: ${type}`;
         return type;
       }
     })
@@ -55,6 +55,7 @@ export const setUpSchemaData = (data, properties, uniqueIdentifiers) => {
   data.type = 'none';
   data.dbSchema = true;
   data.typeDef = false;
+  return data;
 };
 export const addToAllowedTypes = (
   array: string[],

@@ -14,13 +14,12 @@ export function SchemaSelect(props: Props) {
     (async () => {
       try {
         await getterSetterQuery(client, queries.qDBSchemaNames, setSchemaNames);
-        setSelect(schemaNames[0])
       } catch ({ message }) {
         console.log(message);
       }
     })();
   });
-  const { setSelect, select } = props.inputs;
+  const { handleSelect, select } = props.inputs;
   return (
     <styles.Div>
       <styles.SelectBox
@@ -28,12 +27,14 @@ export function SchemaSelect(props: Props) {
           const option = Array.from(e.target.selectedOptions)[0];
           if (!(option instanceof HTMLOptionElement)) return;
           const optionValue = option.value;
-          setSelect(optionValue)
-          // utils.handleSelectChange(e, setSelect, select);
+          handleSelect(optionValue)
         }}
         value={select}
       >
-        {schemaNames?.map((schema, index: number) => {
+        {schemaNames.length > 0 && <option>Select a schema</option>}
+        {schemaNames?.length > 0 ? 
+        
+        schemaNames.map((schema, index: number) => {
           return (
             <>
               <styles.Option
@@ -45,7 +46,7 @@ export function SchemaSelect(props: Props) {
               </styles.Option>
             </>
           );
-        })}
+        }) : <option value="" title="No schemas found!">No schemas found!</option>}
       </styles.SelectBox>
 
     </styles.Div>
