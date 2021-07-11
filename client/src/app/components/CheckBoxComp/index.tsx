@@ -1,14 +1,15 @@
 import * as React from 'react';
 import * as styles from '../formStyles';
+import styled from 'styled-components';
 import { CheckBoxDiv } from '../CheckBoxComp/Styles';
 
-export function CheckBox({ name, setOptions, options, label }) {
+export function CheckBox({ name, setOptions, options, label, grey }) {
   const [checked, setChecked] = React.useState(false);
   let checkBoxName = name;
-  
+  const className = grey ? 'unavailable' : ""
   return (
-    <div>
-      <CheckBoxDiv
+    <Div >
+      <CheckBoxDiv className={className}
         onClick={() => {
           const bool = options[checkBoxName];
           options[checkBoxName] = !bool;
@@ -29,6 +30,9 @@ export function CheckBox({ name, setOptions, options, label }) {
           </styles.Label>
         </div>
       </CheckBoxDiv>
-    </div>
+    </Div>
   );
 }
+const Div = styled.div`
+
+`;

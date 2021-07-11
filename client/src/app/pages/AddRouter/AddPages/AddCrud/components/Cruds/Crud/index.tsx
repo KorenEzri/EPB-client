@@ -50,7 +50,7 @@ export function Crud(props: Props) {
         mutations.mAddCrudOperations,
         crudOptions,
       );
-      let timeout: any = 700;
+      let timeout: any = {timeout:700};
       await getterSetterMutation(client, mutations.mRestartServer, timeout);
       setSpinnerShow(false);
       if (res) {
@@ -61,12 +61,13 @@ export function Crud(props: Props) {
       setError(message);
     }
   };
-  const { actions } = props;
+  let { actions } = props;
   const [hide, setHide] = React.useState(false);
   const [select, setSelect] = React.useState('');
   const [spinnerShow, setSpinnerShow] = React.useState(false);
   const [schemaProperties, setSchemaProperties] = React.useState(['']);
   const [error, setError] = React.useState('');
+  const [unavailableActions, setUnavailableActions] = React.useState<string[]>([])
   const [options, setOptions] = React.useState({
     createOne: false,
     createMany: false,
@@ -86,6 +87,20 @@ export function Crud(props: Props) {
       { schemaName: value },
     );
     setSelect(value)
+    try {
+      const res = await getterSetterQuery(client, queries.qGetAllowedCruds, undefined, undefined, {schemaName: value});
+      console.log(res)
+      console.log(actions)
+      actions.forEach((action) => {
+        if (!res.includes(action.name)) {
+          unavailableActions.push(action.name)
+          setUnavailableActions(unavailableActions)
+        }
+      })
+      console.log(unavailableActions)
+    } catch ({ message }) {
+      console.log(message);
+    }
   };
   const setSelectedOption = (optionValue: string) => {
     console.log(optionValue)
@@ -135,24 +150,25 @@ export function Crud(props: Props) {
       <styles.ActionDiv hide={hide}>Choose CRUD Actions</styles.ActionDiv>
       <styles.ActionWrapperHidden hide={hide}>
         <TextContainer>
-          <styles.Description>
             {actions.map((action, index) => {
               const label = `${action.name} - ${action.title}`;
               const name = action.name;
               return (
-                <Div>
-                  <SmallOption>
+                <styles.Description >
+                <Div >
+                  <SmallOption >
                     <CheckBox
                       label={label}
                       name={name}
                       setOptions={setOptions}
                       options={options}
+                      grey={unavailableActions.includes(action.name)}
                     />
                   </SmallOption>
                 </Div>
+          </styles.Description>
               );
             })}
-          </styles.Description>
         </TextContainer>
         <IDPropertyDiv>
           <styles.ActionDiv hide={hide}>
@@ -198,10 +214,16 @@ const TextContainer = styled.div`
   }
   margin-top: -20px;
 `;
-const Div = styled.div``;
+const Div = styled.div`
+  .grey_out {
+    color: red !important;
+  }
+
+`;
 const SmallOption = styled.p`
   margin: 12px;
   cursor: pointer;
+
 `;
 const SubmitButton = styled.button`
   box-shadow: inset 0px 1px 0px 0px #a4e271;

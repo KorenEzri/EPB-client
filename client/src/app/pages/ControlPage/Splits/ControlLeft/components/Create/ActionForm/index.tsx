@@ -87,7 +87,8 @@ export function ActionForm(props: Props) {
         mutations.mCreateResolver,
         data,
       );
-      let timeout: any = 700;
+      let timeout: any = {timeout:700};
+
       await getterSetterMutation(client, mutations.mRestartServer, timeout);
       addToAllowedTypes(
         allowedTypes,

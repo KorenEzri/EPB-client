@@ -50,7 +50,8 @@ export function CustomTypeForm(props: Props) {
         data,
       );
       if (schemaRes !== 'OK') setError(schemaRes);
-      let timeout: any = 700;
+      let timeout: any = {timeout:700};
+
       await getterSetterMutation(client, mutations.mRestartServer, timeout);
       addToAllowedTypes(props.allowedTypes, data.name, data.type);
       setSpinnerShow(false);

@@ -42,6 +42,11 @@ export const queries = {
       getAllSchemaProps(schemaName: $schemaName)
     }
   `,
+  qGetAllowedCruds: gql`
+    query getAllowedCruds($schemaName: String) {
+      getAllowedCruds(schemaName: $schemaName)
+    }
+  `,
 };
 export const mutations = {
   mCreateResolver: gql`
